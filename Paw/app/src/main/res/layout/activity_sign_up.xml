@@ -7,12 +7,12 @@
     tools:context=".SignUpActivity"
     android:orientation="vertical"
     android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:weightSum="1">
+    android:paddingRight="30dp">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:hint="@string/name"
         app:hintTextAppearance="@style/EditTextHintStyle"
         app:errorEnabled="true">
@@ -99,6 +99,7 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_up"
         android:layout_gravity="center"
-        style="@style/ButtonSecondaryColor"/>
+        style="@style/ButtonSecondaryColor"
+        android:layout_marginTop="40dp"/>
 
 </LinearLayout>

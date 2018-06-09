@@ -1,11 +1,15 @@
 package com.mosis.paw;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mosis.paw.Model.User;
@@ -15,35 +19,81 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private static final String FIREBASE_CHILD_USERS = "users";
 
+    private EditText editName;
+    private EditText editEmail;
+    private EditText editPassword;
+    private EditText editPhone;
+    private EditText editCity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        Button btnSignUp = findViewById(R.id.btn_signUp);
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                persistUser();
-            }
-        });
+        initializeViews();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
+    private void initializeViews() {
+        editName = findViewById(R.id.edit_name);
+        editEmail = findViewById(R.id.edit_email);
+        editPassword = findViewById(R.id.edit_password);
+        editPhone = findViewById(R.id.edit_phone);
+        editCity = findViewById(R.id.edit_city);
+
+
+        Button btnSignUp = findViewById(R.id.btn_signUp);
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateInputs())
+                    persistUser();
+            }
+        });
+    }
+
     private void persistUser() {
         User user = readUser();
-        String userKey = databaseReference.push().getKey();
-        databaseReference.child(FIREBASE_CHILD_USERS).child(userKey).setValue(user);
+        databaseReference.child(FIREBASE_CHILD_USERS)
+                .child(databaseReference.push().getKey())
+                .setValue(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(SignUpActivity.this, "Sign up successfull!",Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(SignUpActivity.this, "Sign up failed!",Toast.LENGTH_LONG).show();
+
+                    }
+                });
     }
 
     private User readUser() {
-        String name = ((EditText) findViewById(R.id.edit_name)).getText().toString();
-        String email = ((EditText) findViewById(R.id.edit_email)).getText().toString();
-        String password = ((EditText) findViewById(R.id.edit_password)).getText().toString();
-        String phone = ((EditText) findViewById(R.id.edit_phone)).getText().toString();
-        String city = ((EditText) findViewById(R.id.edit_city)).getText().toString();
+        String name = editName.getText().toString();
+        String email = editEmail.getText().toString();
+        String password = editPassword.getText().toString();
+        String phone = editPhone.getText().toString();
+        String city = editCity.getText().toString();
 
-        return new User("", name, email, password, phone, city);
+        return new User(null, name, email, password, phone, city);
+    }
+
+    private boolean validateInputs() {
+        return isValid(editName) && isValid(editEmail) && isValid(editPassword)
+                && isValid(editPhone) && isValid(editCity);
+    }
+
+    private boolean isValid(EditText editText) {
+        if (editText.getText().toString().isEmpty()) {
+            editText.setError("This field can't be empty.");
+            return false;
+        }
+        return true;
     }
 }

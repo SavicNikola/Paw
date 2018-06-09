@@ -28,6 +28,7 @@ public class User {
         this.city = city;
     }
 
+    @Exclude
     public String getKey() {
         return key;
     }
