@@ -9,7 +9,12 @@
     <style name="EditTextStyle" parent="Base.Widget.AppCompat.EditText">
         <item name="android:background">@drawable/edit_text_border</item>
         <item name="android:padding">10dp</item>
-        <item name="android:textColorHint">@color/appColorSecondary</item>
+        <item name="android:textColor">@color/appColorSecondary</item>
+    </style>
+
+    <style name="EditTextHintStyle">
+        <item name="android:textColor">@color/appColorSecondary</item>
+        <item name="android:textSize">@dimen/hint_size</item>
     </style>
 
     <style name="ButtonSecondaryColor" parent="Base.Widget.AppCompat.Button">

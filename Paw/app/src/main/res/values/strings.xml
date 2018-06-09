@@ -12,4 +12,5 @@
     <string name="city_region">City/Region</string>
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
+    <string name="paw_image">Image of dog paw</string>
 </resources>
