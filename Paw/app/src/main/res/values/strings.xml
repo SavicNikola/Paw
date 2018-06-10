@@ -7,4 +7,7 @@
     <string name="forgot_passwrod">Forgot passwrod?</string>
     <string name="sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="city_region">City/Region</string>
 </resources>
