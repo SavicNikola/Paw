@@ -10,4 +10,6 @@
     <string name="name">Name</string>
     <string name="phone">Phone</string>
     <string name="city_region">City/Region</string>
+    <string name="reset">Reset</string>
+    <string name="cancel">Cancel</string>
 </resources>
