@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Paw</string>
+    <string name="app_name_big">PAW</string>
+    <string name="app_slogan">we\'ll find your friend</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_passwrod">Forgot passwrod?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
 </resources>
