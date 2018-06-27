@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    >
+
+    <group
+        android:id="@+id/nav_feed_group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_found_feed"
+            android:icon="@drawable/ic_feed"
+            android:title="Found feed" />
+
+        <item
+            android:id="@+id/nav_lost_feed"
+            android:icon="@drawable/ic_feed"
+            android:title="Lost feed" />
+
+        <item
+            android:id="@+id/nav_adopt_feed"
+            android:icon="@drawable/ic_adopt_feed"
+            android:title="Adopt feed" />
+
+    </group>
+
+    <group
+        android:id="@+id/nav_social_group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_friends"
+            android:icon="@drawable/ic_friends"
+            android:title="Friends" />
+
+        <item
+            android:id="@+id/nav_favourites"
+            android:icon="@drawable/ic_favourites"
+            android:title="Favourites" />
+
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/ic_statistics"
+            android:title="Statistics" />
+
+    </group>
+
+    <group
+        android:id="@+id/nav_bottom_group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Log out" />
+
+    </group>
+</menu>
