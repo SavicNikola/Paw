@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="3dp"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true"
+        >
+
+        <!--veliki layout unutar kartice-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!--layout za sliku, ime prezime i vreme-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/post_thumbnail"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_post_profile"
+                    />
+
+                <TextView
+                    android:id="@+id/ime_prezime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ime Prezime"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="@color/colorPrimaryDark"/>
+
+                <TextView
+                    android:id="@+id/time_ago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1h ago"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="end"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <!--deskripcija-->
+            <TextView
+                android:id="@+id/post_desc"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija.."/>
+
+            <!--velika slika posta ideja da se zameni sa vise slika-->
+            <ImageView
+                android:id="@+id/post_picture"
+                android:layout_margin="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_paw"
+                android:layout_weight="1"/>
+
+            <!--layout za zvezdicu i share-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/post_favourite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_post_favourite"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored" />
+
+                <!--separator-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/post_share_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="SHARE"
+                    android:textSize="15dp"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
