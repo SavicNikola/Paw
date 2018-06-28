@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scroll_view">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".AddActivity"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <!--type spinner-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_box_background"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="20dp">
+
+            <Spinner
+                android:id="@+id/type_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:onClick="showTypeSpinner"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
+
+        <!--layout za dugmeta-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+            <Button
+                android:id="@+id/bSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/blue_box_background"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:text="Take a photo"
+                android:drawableLeft="@drawable/ic_camera"
+                android:drawableStart="@drawable/ic_camera"
+                android:textSize="12dp"/>
+            <Button
+                android:id="@+id/cSearch"
+                android:layout_marginLeft="7dp"
+                android:background="@drawable/blue_box_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_weight="1"
+                android:text="Select photo"
+                android:drawableLeft="@drawable/ic_photo_library"
+                android:drawableStart="@drawable/ic_photo_library"
+                android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <!--size spinner-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_box_background"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp">
+
+            <Spinner
+                android:id="@+id/size_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:onClick="showSizeSpinner"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
+
+        <!--color spinner-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_box_background"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp">
+
+            <Spinner
+                android:id="@+id/color_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:onClick="showColorSpinner"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
+
+        <!--desc layout-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="12dp"
+                android:textColor="@color/colorAccent" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/blue_box_background"
+                android:layout_marginTop="5dp"
+                android:hint="Short description about animal"
+                android:textSize="14dp"
+                android:padding="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textSize="12dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/colorAccent" />
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/mapFragment"
+                tools:context=".MapsActivity"
+                android:name="com.mosis.paw.ScrollableMapFragment" />
+
+        </LinearLayout>
+
+        <!--dugme -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="70dp"
+            android:paddingRight="70dp">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Base.Widget.AppCompat.Button.Colored"
+                android:text="ADD"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
