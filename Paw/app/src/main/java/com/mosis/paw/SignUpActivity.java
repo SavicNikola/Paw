@@ -14,10 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mosis.paw.Model.User;
 
-public class SignUpActivity extends AppCompatActivity {
-
-    private DatabaseReference databaseReference;
-    private static final String FIREBASE_CHILD_USERS = "users";
+public class SignUpActivity extends BasicFirebaseOperations {
 
     private EditText editName;
     private EditText editEmail;
@@ -31,8 +28,6 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         initializeViews();
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     private void initializeViews() {
@@ -55,20 +50,20 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void persistUser() {
         User user = readUser();
-        databaseReference.child(FIREBASE_CHILD_USERS)
-                .child(databaseReference.push().getKey())
+        getDatabaseReference().child(FIREBASE_CHILD_USERS)
+                .child(escapeSpecialCharacters(user.getEmail()))
                 .setValue(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(SignUpActivity.this, "Sign up successfull!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, "Sign up successfull!", Toast.LENGTH_LONG).show();
 
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(SignUpActivity.this, "Sign up failed!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, "Sign up failed!", Toast.LENGTH_LONG).show();
 
                     }
                 });
