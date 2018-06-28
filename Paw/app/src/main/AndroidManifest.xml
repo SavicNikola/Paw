@@ -33,10 +33,18 @@
         </activity>
         <activity
             android:name=".AddActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"></activity>
+
+        <activity android:name=".FiltersActivity">
+
         </activity>
+
         <activity
-            android:name=".FiltersActivity">
+            android:name=".FriendsActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -1,5 +1,6 @@
 package com.mosis.paw;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -101,6 +102,10 @@ public class MainSideNavActivity extends AppCompatActivity
                 frag = new FeedFragment();
                 frag.setArguments(bundle);
                 break;
+
+            case R.id.nav_friends:
+                Intent intent = new Intent(this, FriendsActivity.class);
+                this.startActivity(intent);
         }
 
         if (frag != null) {
