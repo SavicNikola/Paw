@@ -11,6 +11,8 @@
         android:elevation="3dp"
         app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true"
+        android:clickable="true"
+        android:id="@+id/feed_card"
         >
 
         <!--veliki layout unutar kartice-->
@@ -41,14 +43,14 @@
                     android:text="Ime Prezime"
                     android:textStyle="bold"
                     android:layout_marginLeft="15dp"
-                    android:textColor="@color/colorPrimaryDark"/>
+                    android:textColor="@color/colorAccent"/>
 
                 <TextView
                     android:id="@+id/time_ago"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1h ago"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorAccent"
                     android:gravity="end"
                     android:layout_weight="1"/>
 
@@ -60,13 +62,14 @@
                 android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/cardview_dark_background"
                 android:text="Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija.."/>
 
             <!--velika slika posta ideja da se zameni sa vise slika-->
             <ImageView
                 android:id="@+id/post_picture"
-                android:layout_margin="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_paw"
@@ -82,6 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_post_favourite"
+                    android:paddingLeft="-20dp"
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Colored" />
 
                 <!--separator-->
