@@ -1,5 +1,7 @@
 package com.mosis.paw;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,8 +13,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MainSideNavActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,7 +36,7 @@ public class MainSideNavActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -36,6 +44,25 @@ public class MainSideNavActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // uzme se header od nav bara da bi nakacili klik ka profilu
+        View hearderview = navigationView.getHeaderView(0);
+
+        // kacimo klik ka profilu
+        LinearLayout ln = (LinearLayout) hearderview.findViewById(R.id.nav_header);
+        ln.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+                v.getContext().startActivity(intent);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        // startujemo sa lost feed-om
+        ChangeFragment(R.id.nav_lost_feed);
     }
 
     @Override
@@ -60,12 +87,8 @@ public class MainSideNavActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        ChangeFragment(item.getItemId());
 
         return super.onOptionsItemSelected(item);
     }
@@ -74,13 +97,20 @@ public class MainSideNavActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
+        ChangeFragment(item.getItemId());
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void ChangeFragment (final int selectedId) {
+
         Fragment frag = null;
         Bundle bundle = null;
+        Intent intent = null;
 
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        switch (id) {
+        switch (selectedId) {
             case R.id.nav_lost_feed:
                 bundle = new Bundle();
                 bundle.putString("feed", "lost");
@@ -101,6 +131,16 @@ public class MainSideNavActivity extends AppCompatActivity
                 frag = new FeedFragment();
                 frag.setArguments(bundle);
                 break;
+
+            case R.id.nav_friends:
+                intent = new Intent(this, FriendsActivity.class);
+                this.startActivity(intent);
+                break;
+
+            case R.id.action_filters:
+                intent = new Intent(this, FiltersActivity.class);
+                this.startActivity(intent);
+                break;
         }
 
         if (frag != null) {
@@ -111,9 +151,5 @@ public class MainSideNavActivity extends AppCompatActivity
 
             fragmentTransaction.commit();
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

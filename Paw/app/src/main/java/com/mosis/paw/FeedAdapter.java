@@ -1,7 +1,9 @@
 package com.mosis.paw;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
         private ImageButton favouriteButton;
         private Button shareButton;
 
+        CardView card;
+
         public MyViewHolder(View itemView) {
             super(itemView);
 
@@ -40,6 +44,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
 
             favouriteButton = (ImageButton) itemView.findViewById(R.id.post_favourite_button);
             shareButton = (Button) itemView.findViewById(R.id.post_share_button);
+
+            card = itemView.findViewById(R.id.feed_card);
         }
     }
 
@@ -82,6 +88,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Share", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PostInformationActivity.class);
+                mContext.startActivity(intent);
             }
         });
     }
