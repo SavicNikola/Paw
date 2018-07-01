@@ -3,10 +3,10 @@ package com.mosis.paw;
 public class Friend {
 
     private String name;
-    private String image;
+    private Integer image;
     private String place;
 
-    public Friend(String name, String image, String place) {
+    public Friend(String name, Integer image, String place) {
         this.name = name;
         this.image = image;
         this.place = place;
@@ -16,7 +16,7 @@ public class Friend {
         return name;
     }
 
-    public String getImage() {
+    public Integer getImage() {
         return image;
     }
 

@@ -23,7 +23,7 @@
 
         <activity
             android:name=".MainSideNavActivity"
-            android:label="@string/title_activity_main_side_nav"
+            android:label="Paw"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,19 +33,18 @@
         </activity>
         <activity
             android:name=".AddActivity"
-            android:windowSoftInputMode="stateHidden"></activity>
-
-        <activity android:name=".FiltersActivity">
-
-        </activity>
-
-        <activity
-            android:name=".FriendsActivity">
-
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".FiltersActivity" />
+        <activity android:name=".FriendsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
+        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".FoundActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".PostInformationActivity"></activity>
     </application>
 
 </manifest>

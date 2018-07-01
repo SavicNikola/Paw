@@ -45,9 +45,9 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
     }
 
     void DummyItems() {
-        Friend f = new Friend("Marko Markovic", "https://api.androidhive.info/json/images/tom_hardy.jpg", "Nis, Serbia");
-        Friend f1 = new Friend("Nikola Nikolic", "https://api.androidhive.info/json/images/tom_hardy.jpg", "Belgrade, Serbia");
-        Friend f2 = new Friend("Marko Stefanovic", "https://api.androidhive.info/json/images/tom_hardy.jpg", "Novi Sad, Serbia");
+        Friend f = new Friend("Marko Markovic", R.drawable.avatar1, "Nis, Serbia");
+        Friend f1 = new Friend("Nikola Nikolic", R.drawable.avatar2, "Belgrade, Serbia");
+        Friend f2 = new Friend("Marko Stefanovic", R.drawable.avatar3, "Novi Sad, Serbia");
 
         friendsList.add(f);
         friendsList.add(f1);
@@ -56,7 +56,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
     private void EditToolbar() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
-        getSupportActionBar().setTitle("FRIENDS");
+        getSupportActionBar().setTitle("Friends");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

@@ -71,7 +71,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         holder.place.setText(friend.getPlace());
 
         Glide.with(mContext)
-                .load(R.mipmap.ic_launcher_round)
+                .load(friend.getImage())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.thumbnail);
     }
