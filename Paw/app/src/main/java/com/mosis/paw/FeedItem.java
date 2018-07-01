@@ -9,16 +9,19 @@ public class FeedItem {
 
     private Boolean favourite;
 
+    private FeedTypeEnum feedType;
+
     public FeedItem() {
 
     }
 
-    public FeedItem(String imePrezime, int thumbnail, String timeAgo, String postDesc, int postPicture, Boolean favourite) {
+    public FeedItem(String imePrezime, int thumbnail, String timeAgo, String postDesc, int postPicture, FeedTypeEnum type, Boolean favourite) {
         this.imePrezime = imePrezime;
         this.thumbnail = thumbnail;
         this.timeAgo = timeAgo;
         this.postDesc = postDesc;
         this.postPicture = postPicture;
+        this.feedType = type;
         this.favourite = favourite;
     }
 
@@ -68,5 +71,9 @@ public class FeedItem {
 
     public void setFavoruite(Boolean favourite) {
         this.favourite = favourite;
+    }
+
+    public FeedTypeEnum getFeedType() {
+        return feedType;
     }
 }

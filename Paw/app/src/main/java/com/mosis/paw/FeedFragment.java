@@ -26,6 +26,8 @@ public class FeedFragment extends Fragment {
 
     private String feedName;
 
+    private View mView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mView = view;
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -55,13 +59,18 @@ public class FeedFragment extends Fragment {
                 break;
         }
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.feed_recycler_view);
+        InitRecycleView();
+        InitFabButton();
+    }
+
+    private void InitRecycleView() {
+        recyclerView = (RecyclerView) mView.findViewById(R.id.feed_recycler_view);
 
         //proba glupi podaci
         feedList = new ArrayList<>();
-        FeedItem item = new FeedItem("Marko Markovic", R.drawable.ic_post_profile, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.ic_post_favourite, true);
-        FeedItem item2 = new FeedItem("Nikola Savic", R.drawable.ic_post_profile, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.ic_adopt_feed, true);
-        FeedItem item3 = new FeedItem("Dusan Duki", R.drawable.ic_post_profile, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.ic_friends, true);
+        FeedItem item = new FeedItem("Marko Markovic", R.drawable.avatar1, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.picture1, FeedTypeEnum.FOUND, true);
+        FeedItem item2 = new FeedItem("Nikola Niki", R.drawable.avatar2, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.picture2, FeedTypeEnum.LOST, true);
+        FeedItem item3 = new FeedItem("Stefan Steki", R.drawable.avatar3, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.picture3, FeedTypeEnum.ADOPT, true);
         feedList.add(item);
         feedList.add(item2);
         feedList.add(item3);
@@ -72,10 +81,11 @@ public class FeedFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
+    }
 
-
+    private void InitFabButton() {
         // fab button
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab = (FloatingActionButton) mView.findViewById(R.id.fab);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
