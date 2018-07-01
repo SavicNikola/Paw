@@ -39,7 +39,7 @@
     </style>
 
     <style name="EditTextHintStyle">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize">@dimen/hint_size</item>
     </style>
 
@@ -52,7 +52,7 @@
 
     <style name="ButtonTertiaryColor" parent="Base.Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_tertiary_color</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
     </style>

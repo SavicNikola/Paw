@@ -1,6 +1,7 @@
 package com.mosis.paw;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,13 +20,13 @@ public class LoginActivity extends BasicFirebaseOperations {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        User user = new User(null, "Pera Peric", "pera@gmail.com", "pera123",
-//                "0641234153", "Nis, Serbia",
-//                "http://cdn1.thr.com/sites/default/files/2017/08/gettyimages-630421358_-_h_2017.jpg");
-//        startActivity(new Intent(this, ProfileActivity2.class)
-//                .putExtra("user", user)
-//                .putExtra(ProfileActivity2.PROFILE_TYPE, ProfileActivity2.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
+        EditToolbar();
         initializeViews();
+    }
+
+    private void EditToolbar() {
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
+        getSupportActionBar().setTitle("Log in");
     }
 
     private void initializeViews() {
