@@ -22,9 +22,9 @@ public class LoginActivity extends BasicFirebaseOperations {
 //        User user = new User(null, "Pera Peric", "pera@gmail.com", "pera123",
 //                "0641234153", "Nis, Serbia",
 //                "http://cdn1.thr.com/sites/default/files/2017/08/gettyimages-630421358_-_h_2017.jpg");
-//        startActivity(new Intent(this, ProfileActivity.class)
+//        startActivity(new Intent(this, ProfileActivity2.class)
 //                .putExtra("user", user)
-//                .putExtra(ProfileActivity.PROFILE_TYPE, ProfileActivity.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
+//                .putExtra(ProfileActivity2.PROFILE_TYPE, ProfileActivity2.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
         initializeViews();
     }
 
@@ -56,14 +56,30 @@ public class LoginActivity extends BasicFirebaseOperations {
     }
 
     private void logIn() {
-        String email = ((EditText) findViewById(R.id.edit_email)).getText().toString();
-        String password = ((EditText) findViewById(R.id.edit_password)).getText().toString();
+        final EditText editEmail = findViewById(R.id.edit_email);
+        final EditText editPassword = findViewById(R.id.edit_password);
+        String email = editEmail.getText().toString();
+        final String password = editPassword.getText().toString();
 
         getDatabaseReference().child(FIREBASE_CHILD_USERS).child(escapeSpecialCharacters(email))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
+                        if (user == null) {
+                            editEmail.setError(getString(R.string.error_wrong_email));
+                        } else if (!user.getPassword().equals(password)) {
+                            editPassword.setError(getString(R.string.error_password_incorect));
+                        } else {
+                            //ulogovan
+                            User user2 = new User(null, "Pera Peric", "pera@gmail.com", "pera123",
+                                    "0641234153", "Nis, Serbia",
+                                    "http://cdn1.thr.com/sites/default/files/2017/08/gettyimages-630421358_-_h_2017.jpg");
+                            startActivity(new Intent(LoginActivity.this, ProfileActivity2.class)
+                                    .putExtra("user", user2)
+                                    .putExtra(ProfileActivity2.PROFILE_TYPE, ProfileActivity2.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
+
+                        }
                     }
 
                     @Override

@@ -86,7 +86,7 @@ public class SignUpActivity extends BasicFirebaseOperations {
 
     private boolean isValid(EditText editText) {
         if (editText.getText().toString().isEmpty()) {
-            editText.setError("This field can't be empty.");
+            editText.setError(getString(R.string.error_empty_input_field));
             return false;
         }
         return true;

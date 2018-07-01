@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,21 +11,21 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mosis.paw.Model.User;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity2 extends AppCompatActivity {
 
-    Button btnProfile;
+    private Button btnProfile;
 
     public static final String PROFILE_TYPE = "profileType";
     public static final int PROFILE_FRIEND = 1;
     public static final int PROFILE_NOT_FRIEND = 2;
     public static final int PROFILE_CURRENT_USER = 3;
 
-    int profileType;
+    private int profileType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile2);
 
 
         initViews();

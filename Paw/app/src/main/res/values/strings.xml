@@ -19,4 +19,7 @@
     <string name="points">POINTS</string>
     <string name="helps">HELPS</string>
     <string name="friends">FRIENDS</string>
+    <string name="error_empty_input_field">This field can\'t be empty.</string>
+    <string name="error_wrong_email">Wrong email. Try again.</string>
+    <string name="error_password_incorect">Password incorect.</string>
 </resources>
