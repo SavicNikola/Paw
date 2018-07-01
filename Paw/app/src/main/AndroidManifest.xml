@@ -45,6 +45,18 @@
             android:name=".FoundActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".PostInformationActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".LoginActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>/>
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".ProfileActivity2"
+            android:theme="@style/ActivityNoActionBar"/>
     </application>
 
 </manifest>

@@ -1,5 +1,27 @@
 <resources>
     <string name="app_name">Paw</string>
+    <string name="app_name_big">PAW</string>
+    <string name="app_slogan">we\'ll find your friend</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_passwrod">Forgot passwrod?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in">Log In</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="city_region">City/Region</string>
+    <string name="reset">Reset</string>
+    <string name="cancel">Cancel</string>
+    <string name="paw_image">Image of dog paw</string>
+    <string name="user_image">User image</string>
+    <string name="remove">Remove</string>
+    <string name="add">Add</string>
+    <string name="points">POINTS</string>
+    <string name="helps">HELPS</string>
+    <string name="friends">FRIENDS</string>
+    <string name="error_empty_input_field">This field can\'t be empty.</string>
+    <string name="error_wrong_email">Wrong email. Try again.</string>
+    <string name="error_password_incorect">Password incorect.</string>
     <string name="title_activity_main_side_nav">MainSideNavActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
