@@ -34,7 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.profile_start_layout).requestFocus();
 
         // profile
-        ((ImageView) findViewById(R.id.profile_picture)).setImageResource(R.drawable.profile_full);
+        ((ImageView) findViewById(R.id.image_profile)).setImageResource(R.drawable.profile_full);
     }
 
     private void InitRecycleView() {
@@ -58,7 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void EditToolbar() {
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
+        Toolbar toolbar = findViewById(R.id.toolbar_profile);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

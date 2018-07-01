@@ -42,7 +42,8 @@ public class LoginActivity extends BasicFirebaseOperations {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logIn();
+                //logIn();
+                startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
             }
         });
 
