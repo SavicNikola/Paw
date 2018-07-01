@@ -3,6 +3,8 @@ package com.mosis.paw;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,13 +28,25 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
         initViews();
         User user = getIntent().getParcelableExtra("user");
         profileType = getIntent().getIntExtra(PROFILE_TYPE, 0);
         displayUserInfo(user);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private void initViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar_profile);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         btnProfile = findViewById(R.id.btn_profile);
     }
 

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#024385</color>
+    <color name="colorPrimary">#2799FA</color>
+    <color name="colorTertiary">#F3F8FE</color>
     <color name="colorAccent">#FF4081</color>
-
-    <color name="appColorPrimary">#024385</color>
-    <color name="appColorSecondary">#2799FA</color>
-    <color name="appColorTertiary">#F3F8FE</color>
 
 </resources>
