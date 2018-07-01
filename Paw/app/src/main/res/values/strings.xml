@@ -16,4 +16,7 @@
     <string name="user_image">User image</string>
     <string name="remove">Remove</string>
     <string name="add">Add</string>
+    <string name="points">POINTS</string>
+    <string name="helps">HELPS</string>
+    <string name="friends">FRIENDS</string>
 </resources>

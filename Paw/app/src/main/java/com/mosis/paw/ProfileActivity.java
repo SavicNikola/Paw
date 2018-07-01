@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mosis.paw.Model.User;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -15,6 +17,7 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String PROFILE_TYPE = "profileType";
     public static final int PROFILE_FRIEND = 1;
     public static final int PROFILE_NOT_FRIEND = 2;
+    public static final int PROFILE_CURRENT_USER = 3;
 
     int profileType;
 
@@ -34,9 +37,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void displayUserInfo(User user) {
+        Glide.with(this)
+                .load(user.getImageUrl())
+                .into(((ImageView) findViewById(R.id.image_profile)));
+
         ((TextView) findViewById(R.id.text_user_name)).setText(user.getName());
         ((TextView) findViewById(R.id.text_user_location)).setText(user.getCity());
-        //todo: glide
 
         switch (profileType) {
             case PROFILE_FRIEND:
@@ -45,7 +51,16 @@ public class ProfileActivity extends AppCompatActivity {
             case PROFILE_NOT_FRIEND:
                 setUpButtonNotFriend();
                 break;
+            case PROFILE_CURRENT_USER:
+                setUpButtonMyProfile();
+                break;
         }
+    }
+
+    private void setUpButtonMyProfile() {
+        btnProfile.setText(R.string.remove);
+
+        //todo: logika za editovanje profila
     }
 
     private void setUpButtonFriend() {

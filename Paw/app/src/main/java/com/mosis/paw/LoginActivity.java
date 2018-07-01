@@ -19,7 +19,9 @@ public class LoginActivity extends BasicFirebaseOperations {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        User user = new User(null, "Pera Peric", "pera@gmail.com", "pera123", "0641234153", "Nis, Serbia");
+        User user = new User(null, "Pera Peric", "pera@gmail.com", "pera123",
+                "0641234153", "Nis, Serbia",
+                "http://cdn1.thr.com/sites/default/files/2017/08/gettyimages-630421358_-_h_2017.jpg");
         startActivity(new Intent(this, ProfileActivity.class)
                 .putExtra("user", user)
                 .putExtra(ProfileActivity.PROFILE_TYPE, ProfileActivity.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati

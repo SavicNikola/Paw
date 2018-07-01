@@ -17,6 +17,7 @@ public class User implements Parcelable{
     private String password;
     private String phone;
     private String city;
+    private String imageUrl;
 
     public User() {
 
@@ -29,6 +30,16 @@ public class User implements Parcelable{
         this.password = password;
         this.phone = phone;
         this.city = city;
+    }
+
+    public User(String key, String name, String email, String password, String phone, String city, String imageUrl) {
+        this.key = key;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.city = city;
+        this.imageUrl = imageUrl;
     }
 
     @Exclude
@@ -80,6 +91,13 @@ public class User implements Parcelable{
         this.city = city;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     protected User(Parcel in) {
         key = in.readString();
@@ -88,6 +106,7 @@ public class User implements Parcelable{
         password = in.readString();
         phone = in.readString();
         city = in.readString();
+        imageUrl = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -115,5 +134,6 @@ public class User implements Parcelable{
         dest.writeString(password);
         dest.writeString(phone);
         dest.writeString(city);
+        dest.writeString(imageUrl);
     }
 }
