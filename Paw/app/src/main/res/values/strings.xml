@@ -13,4 +13,7 @@
     <string name="reset">Reset</string>
     <string name="cancel">Cancel</string>
     <string name="paw_image">Image of dog paw</string>
+    <string name="user_image">User image</string>
+    <string name="remove">Remove</string>
+    <string name="add">Add</string>
 </resources>

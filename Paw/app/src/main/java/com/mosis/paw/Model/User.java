@@ -1,10 +1,13 @@
 package com.mosis.paw.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class User {
+public class User implements Parcelable{
 
     @Exclude
     private String key;
@@ -75,5 +78,42 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+
+    protected User(Parcel in) {
+        key = in.readString();
+        name = in.readString();
+        email = in.readString();
+        password = in.readString();
+        phone = in.readString();
+        city = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeString(phone);
+        dest.writeString(city);
     }
 }

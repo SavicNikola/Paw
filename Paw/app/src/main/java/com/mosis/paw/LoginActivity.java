@@ -19,7 +19,11 @@ public class LoginActivity extends BasicFirebaseOperations {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        initializeViews();
+        User user = new User(null, "Pera Peric", "pera@gmail.com", "pera123", "0641234153", "Nis, Serbia");
+        startActivity(new Intent(this, ProfileActivity.class)
+                .putExtra("user", user)
+                .putExtra(ProfileActivity.PROFILE_TYPE, ProfileActivity.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
+//        initializeViews();
     }
 
     private void initializeViews() {
