@@ -35,7 +35,7 @@
     <style name="EditTextStyle" parent="Base.Widget.AppCompat.EditText">
         <item name="android:background">@drawable/edit_text_border</item>
         <item name="android:padding">10dp</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="EditTextHintStyle">
