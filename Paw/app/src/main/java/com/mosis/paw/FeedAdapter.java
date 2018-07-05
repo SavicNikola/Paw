@@ -15,7 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> {
@@ -63,8 +66,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        FeedItem post = feedItemsList.get(position);
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+        final FeedItem post = feedItemsList.get(position);
 
         // load thumbnail
         Glide.with(mContext).load(post.getThumbnail()).into(holder.thumbnail);
@@ -77,10 +80,42 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
         // load picture
         Glide.with(mContext).load(post.getPostPicture()).into(holder.postPicture);
 
+        if (post.getFavoruite())
+            holder.favouriteButton.setImageResource(R.drawable.ic_post_favourite_fill);
+
         holder.favouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Favourite", Toast.LENGTH_SHORT).show();
+
+                ArrayList<String> favourites = Pawer.getInstance().getFavourites();
+
+                if (favourites.contains(post.getPostId())) {
+                    // delete favourite
+                    favourites.remove(post.getPostId());
+                    holder.favouriteButton.setImageResource(R.drawable.ic_post_favourite);
+                } else {
+                    // add fovourite
+                    favourites.add(post.getPostId());
+                    holder.favouriteButton.setImageResource(R.drawable.ic_post_favourite_fill);
+                }
+
+                FirebaseSingleton.getInstance().databaseReference
+                        .child("users")
+                        .child(Pawer.getInstance().getEmail())
+                        .child("favourites")
+                        .setValue(favourites)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(mContext, "Favourite update", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
             }
         });
 

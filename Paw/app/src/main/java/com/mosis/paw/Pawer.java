@@ -1,22 +1,48 @@
 package com.mosis.paw;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.mosis.paw.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Pawer extends User {
 
     private static final Pawer instance = new Pawer();
+    //private static final Pawer instance = null;
 
     private Pawer() {
-        favourites = new ArrayList<String>();
+        //favourites;
 
-        // TODO: proba podaci obrisati posle
-        setEmail("peraperic");
+//        // TODO: proba podaci obrisati posle
+//        setEmail("gogidotcom");
+//
+//        // povucemo svoji favourites
+//        FirebaseSingleton.getInstance().databaseReference
+//                .child("users")
+//                .child(getEmail())
+//                .child("favourites")
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        setFavourites((ArrayList<String>) dataSnapshot.getValue());
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
     }
 
-    public static Pawer getInstance() { return instance;}
+    public static Pawer getInstance() {
+
+        return instance;
+    }
 
     private Integer avatar;
 
@@ -27,7 +53,15 @@ public class Pawer extends User {
     private String latitude;
     private String longitude;
 
-    private List<String> favourites;
+    private ArrayList<String> favourites;
+
+    public ArrayList<String> getFavourites() {
+        return favourites;
+    }
+
+    public void setFavourites(ArrayList<String> favourites) {
+        this.favourites = favourites;
+    }
 
     public void initValues(Pawer values) {
 
@@ -81,11 +115,4 @@ public class Pawer extends User {
         this.longitude = longitude;
     }
 
-    public List getFavourites() {
-        return favourites;
-    }
-
-    public void setFavourites(List favourites) {
-        this.favourites = favourites;
-    }
 }

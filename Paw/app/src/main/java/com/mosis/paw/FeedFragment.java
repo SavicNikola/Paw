@@ -13,6 +13,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.util.DataUtils;
 import com.google.firebase.database.DataSnapshot;
@@ -38,8 +39,6 @@ public class FeedFragment extends Fragment {
     private String feedName;
 
     private View mView;
-
-    DatabaseReference databaseReference;
 
     @Nullable
     @Override
@@ -70,9 +69,10 @@ public class FeedFragment extends Fragment {
             case "adopt":
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Adopt feed");
                 break;
+            case "favourites":
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Your favourites posts");
+                break;
         }
-
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         InitRecycleView();
         InitFabButton();
@@ -90,7 +90,12 @@ public class FeedFragment extends Fragment {
 //        feedList.add(item2);
 //        feedList.add(item3);
 
-        initFeedFromDatabase();
+        feedList = new ArrayList<FeedItem>();
+
+        if (feedName.equals("favourites"))
+            initFavouriteFeed();
+        else
+            initFeedFromDatabase();
 
         adapter = new FeedAdapter(getActivity(), feedList);
 
@@ -102,9 +107,7 @@ public class FeedFragment extends Fragment {
 
     private void initFeedFromDatabase() {
 
-        feedList = new ArrayList<FeedItem>();
-
-        databaseReference
+        FirebaseSingleton.getInstance().databaseReference
                 .child("posts")
                 .orderByChild("type")
                 .equalTo(feedName) // filter po feed
@@ -120,7 +123,10 @@ public class FeedFragment extends Fragment {
                     post = postSnapshot.getValue(Post.class);
 
                     final Post finalPost = post;
-                    databaseReference.child("users").child(post.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseSingleton.getInstance().databaseReference
+                            .child("users")
+                            .child(post.getUserId())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Pawer user = dataSnapshot.getValue(Pawer.class);
@@ -132,8 +138,14 @@ public class FeedFragment extends Fragment {
 
                             FeedTypeEnum feedType = SwitchType(inerPost.getType());
 
+                            Boolean favourite = false;
+
+                            if (Pawer.getInstance().getFavourites() != null) {
+                                favourite = Pawer.getInstance().getFavourites().contains(inerPost.getId());
+                            }
+
                             // TODO: da se refaktorise, post slika da se ubaci
-                            feedList.add(new FeedItem(user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, true));
+                            feedList.add(new FeedItem(inerPost.getId(), user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, favourite));
                             adapter.notifyDataSetChanged();
                         }
 
@@ -150,6 +162,74 @@ public class FeedFragment extends Fragment {
 
             }
         });
+    }
+
+    void initFavouriteFeed() {
+
+        FirebaseSingleton.getInstance().databaseReference
+                .child("users")
+                .child(Pawer.getInstance().getEmail())
+                .child("favourites")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        String favourite;
+                        feedList.clear();
+
+                        for (DataSnapshot favouritesSnapshot : dataSnapshot.getChildren()) {
+
+                            favourite = favouritesSnapshot.getValue(String.class);
+
+                            FirebaseSingleton.getInstance().databaseReference
+                                    .child("posts")
+                                    .child(favourite)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            final Post post = dataSnapshot.getValue(Post.class);
+
+                                            FirebaseSingleton.getInstance().databaseReference
+                                                    .child("users")
+                                                    .child(post.getUserId())
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            Pawer user = dataSnapshot.getValue(Pawer.class);
+                                                            Post inerPost = post;
+
+                                                            int avatar = SwitchAvatar(user.getAvatar());
+
+                                                            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.valueOf(inerPost.getTime()));
+
+                                                            FeedTypeEnum feedType = SwitchType(inerPost.getType());
+
+                                                            // TODO: da se refaktorise, post slika da se ubaci
+                                                            feedList.add(new FeedItem(post.getId(), user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, true));
+                                                            adapter.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private FeedTypeEnum SwitchType(String type) {

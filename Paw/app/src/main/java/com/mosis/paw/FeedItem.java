@@ -1,6 +1,8 @@
 package com.mosis.paw;
 
 public class FeedItem {
+
+    private String postId;
     private String imePrezime;
     private int thumbnail;
     private String timeAgo;
@@ -15,7 +17,8 @@ public class FeedItem {
 
     }
 
-    public FeedItem(String imePrezime, int thumbnail, String timeAgo, String postDesc, int postPicture, FeedTypeEnum type, Boolean favourite) {
+    public FeedItem(String postId, String imePrezime, int thumbnail, String timeAgo, String postDesc, int postPicture, FeedTypeEnum type, Boolean favourite) {
+        this.postId = postId;
         this.imePrezime = imePrezime;
         this.thumbnail = thumbnail;
         this.timeAgo = timeAgo;
@@ -23,6 +26,14 @@ public class FeedItem {
         this.postPicture = postPicture;
         this.feedType = type;
         this.favourite = favourite;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getImePrezime() {

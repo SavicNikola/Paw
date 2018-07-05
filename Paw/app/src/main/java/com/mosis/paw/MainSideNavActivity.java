@@ -62,7 +62,7 @@ public class MainSideNavActivity extends AppCompatActivity
         });
 
         // startujemo sa lost feed-om
-        ChangeFragment(R.id.nav_lost_feed);
+        ChangeFragment(R.id.nav_found_feed);
     }
 
     @Override
@@ -128,6 +128,13 @@ public class MainSideNavActivity extends AppCompatActivity
             case R.id.nav_adopt_feed:
                 bundle = new Bundle();
                 bundle.putString("feed", "adopt");
+                frag = new FeedFragment();
+                frag.setArguments(bundle);
+                break;
+
+            case R.id.nav_favourites:
+                bundle = new Bundle();
+                bundle.putString("feed", "favourites");
                 frag = new FeedFragment();
                 frag.setArguments(bundle);
                 break;
