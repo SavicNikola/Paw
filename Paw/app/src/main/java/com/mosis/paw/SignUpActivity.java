@@ -61,8 +61,8 @@ public class SignUpActivity extends BasicFirebaseOperations {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateInputs())
-                    persistUser();
+//                if (validateInputs())
+//                    persistUser();
             }
         });
     }
@@ -86,6 +86,8 @@ public class SignUpActivity extends BasicFirebaseOperations {
 
                     }
                 });
+
+
     }
 
     private User readUser() {

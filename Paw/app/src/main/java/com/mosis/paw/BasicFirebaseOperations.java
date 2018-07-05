@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class BasicFirebaseOperations extends AppCompatActivity {
     public static final String FIREBASE_CHILD_USERS = "users";
+    public static final String FIREBASE_CHILD_POSTS = "posts";
 
     private DatabaseReference databaseReference;
 

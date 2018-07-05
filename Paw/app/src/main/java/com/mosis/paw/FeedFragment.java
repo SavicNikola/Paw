@@ -9,11 +9,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.util.DataUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.mosis.paw.Model.Post;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FeedFragment extends Fragment {
@@ -27,6 +38,8 @@ public class FeedFragment extends Fragment {
     private String feedName;
 
     private View mView;
+
+    DatabaseReference databaseReference;
 
     @Nullable
     @Override
@@ -59,6 +72,8 @@ public class FeedFragment extends Fragment {
                 break;
         }
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
         InitRecycleView();
         InitFabButton();
     }
@@ -66,14 +81,16 @@ public class FeedFragment extends Fragment {
     private void InitRecycleView() {
         recyclerView = (RecyclerView) mView.findViewById(R.id.feed_recycler_view);
 
-        //proba glupi podaci
-        feedList = new ArrayList<>();
-        FeedItem item = new FeedItem("Marko Markovic", R.drawable.avatar1, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.picture1, FeedTypeEnum.FOUND, true);
-        FeedItem item2 = new FeedItem("Nikola Niki", R.drawable.avatar2, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.picture2, FeedTypeEnum.LOST, true);
-        FeedItem item3 = new FeedItem("Stefan Steki", R.drawable.avatar3, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.picture3, FeedTypeEnum.ADOPT, true);
-        feedList.add(item);
-        feedList.add(item2);
-        feedList.add(item3);
+//        //proba glupi podaci
+//        feedList = new ArrayList<>();
+//        FeedItem item = new FeedItem("Marko Markovic", R.drawable.avatar1, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.picture1, FeedTypeEnum.FOUND, true);
+//        FeedItem item2 = new FeedItem("Nikola Niki", R.drawable.avatar2, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.picture2, FeedTypeEnum.LOST, true);
+//        FeedItem item3 = new FeedItem("Stefan Steki", R.drawable.avatar3, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.picture3, FeedTypeEnum.ADOPT, true);
+//        feedList.add(item);
+//        feedList.add(item2);
+//        feedList.add(item3);
+
+        initFeedFromDatabase();
 
         adapter = new FeedAdapter(getActivity(), feedList);
 
@@ -81,6 +98,94 @@ public class FeedFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initFeedFromDatabase() {
+
+        feedList = new ArrayList<FeedItem>();
+
+        databaseReference
+                .child("posts")
+                .orderByChild("type")
+                .equalTo(feedName) // filter po feed
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Post post;
+                feedList.clear();
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    // TODO: handle the post
+                    post = postSnapshot.getValue(Post.class);
+
+                    final Post finalPost = post;
+                    databaseReference.child("users").child(post.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Pawer user = dataSnapshot.getValue(Pawer.class);
+                            Post inerPost = finalPost;
+
+                            int avatar = SwitchAvatar(user.getAvatar());
+
+                            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.valueOf(inerPost.getTime()));
+
+                            FeedTypeEnum feedType = SwitchType(inerPost.getType());
+
+                            // TODO: da se refaktorise, post slika da se ubaci
+                            feedList.add(new FeedItem(user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, true));
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private FeedTypeEnum SwitchType(String type) {
+
+        FeedTypeEnum feedType = FeedTypeEnum.LOST; //default
+        switch (type) {
+            case "lost":
+                feedType = FeedTypeEnum.LOST;
+                break;
+            case "found":
+                feedType = FeedTypeEnum.FOUND;
+                break;
+            case "adopt":
+                feedType = FeedTypeEnum.ADOPT;
+                break;
+        }
+
+        return feedType;
+    }
+
+    private int SwitchAvatar(Integer input) {
+
+        int avatar = R.drawable.avatar1; //default
+        switch (input) {
+            case 1:
+                avatar = R.drawable.avatar1;
+                break;
+            case 2:
+                avatar = R.drawable.avatar2;
+                break;
+            case 3:
+                avatar = R.drawable.avatar3;
+                break;
+        }
+
+        return avatar;
     }
 
     private void InitFabButton() {
@@ -105,6 +210,8 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getContext(), AddActivity.class);
+                // type of post
+                i.putExtra("TYPE", feedName);
                 getContext().startActivity(i);
             }
         });

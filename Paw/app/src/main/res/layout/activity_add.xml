@@ -148,6 +148,7 @@
                 android:textColor="@color/colorAccent" />
 
             <EditText
+                android:id="@+id/add_post_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/blue_box_background"
@@ -188,6 +189,7 @@
             android:paddingLeft="70dp"
             android:paddingRight="70dp">
             <Button
+                android:id="@+id/add_post_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Base.Widget.AppCompat.Button.Colored"

@@ -42,7 +42,7 @@ public class LoginActivity extends BasicFirebaseOperations {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //logIn();
+                logIn();
                 startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
             }
         });
@@ -68,6 +68,7 @@ public class LoginActivity extends BasicFirebaseOperations {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
+                        Pawer.getInstance().initValues(dataSnapshot.getValue(Pawer.getInstance().getClass()));
                         if (user == null) {
                             editEmail.setError(getString(R.string.error_wrong_email));
                         } else if (!user.getPassword().equals(password)) {

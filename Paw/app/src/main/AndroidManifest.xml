@@ -25,6 +25,11 @@
             android:name=".MainSideNavActivity"
             android:label="Paw"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".AddActivity"
@@ -42,11 +47,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".PostInformationActivity"></activity>
         <activity android:name=".LoginActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>/>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".ForgotPasswordActivity" />
