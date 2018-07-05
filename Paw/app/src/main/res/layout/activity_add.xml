@@ -48,7 +48,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp">
             <Button
-                android:id="@+id/bSearch"
+                android:id="@+id/btn_take_picture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/blue_box_background"
@@ -61,7 +61,7 @@
                 android:drawableStart="@drawable/ic_camera"
                 android:textSize="12dp"/>
             <Button
-                android:id="@+id/cSearch"
+                android:id="@+id/btn_select_photos"
                 android:layout_marginLeft="7dp"
                 android:background="@drawable/blue_box_background"
                 android:layout_width="match_parent"

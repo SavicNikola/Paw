@@ -1,10 +1,14 @@
 package com.mosis.paw;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.FileProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +21,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -25,21 +28,25 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.mosis.paw.Model.Post;
 
-import java.sql.Time;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
-import static com.mosis.paw.BasicFirebaseOperations.FIREBASE_CHILD_USERS;
-
 public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCallback {
+
+    private static final int RC_CAMERA = 1;
 
     private Spinner typeSpinner;
     private Spinner sizeSpinner;
     private Spinner colorSpinner;
     private List<String> spinnerList;
     private ArrayAdapter<String> spinnerAdapter;
+    private Uri capturedImageUri;
 
     private EditText descText;
 
@@ -67,8 +74,47 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         descText = findViewById(R.id.add_post_desc);
 
         initAddButton();
+        initBtnTakePicture();
 
         InitMap();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_CAMERA) {
+            Toast.makeText(this, capturedImageUri.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String filename = "IMG_" + timestamp;
+        File imagesFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"Paw");
+        imagesFolder.mkdir();
+        return File.createTempFile(filename, ".jpg", imagesFolder);
+    }
+
+    private void initBtnTakePicture() {
+        Button btnTakePicture = findViewById(R.id.btn_take_picture);
+        btnTakePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        Log.e("AddActivity", "Failed to create image file "+e.getMessage());
+                    }
+                    if (photoFile != null) {
+                        capturedImageUri = FileProvider.getUriForFile(AddActivity.this, getString(R.string.file_provider_authority), photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
+                        startActivityForResult(takePictureIntent, RC_CAMERA);
+                    }
+                }
+            }
+        });
     }
 
     private void initAddButton() {
