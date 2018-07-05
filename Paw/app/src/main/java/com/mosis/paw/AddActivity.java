@@ -14,10 +14,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -51,6 +54,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     private ArrayList<Uri> imageUris = new ArrayList<>();
 
     private EditText descText;
+    private LinearLayout imagesContainer;
 
     private String typeOfPost;
 
@@ -72,10 +76,12 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         ColorSpinnerInit();
 
         descText = findViewById(R.id.add_post_desc);
+        imagesContainer = findViewById(R.id.linear_images);
 
         initAddButton();
         initBtnTakePicture();
         initBtnSelectPhotos();
+        initDiscardButton();
 
         InitMap();
     }
@@ -83,19 +89,58 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CAMERA) {
-            imageUris.add(capturedImageUri);
+            addImageUri(capturedImageUri);
         } else if (requestCode == RC_GALERY) {
             if (data != null) {
                 if (data.getClipData() != null) {
                     for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                        imageUris.add(data.getClipData().getItemAt(i).getUri());
+                        addImageUri(data.getClipData().getItemAt(i).getUri());
                     }
                 } else {
-                    imageUris.add(data.getData());
+                    addImageUri(data.getData());
                 }
             }
         }
-        Toast.makeText(this, imageUris.size()+" ", Toast.LENGTH_SHORT).show();
+        refreshImages();
+        Toast.makeText(this, imageUris.size() + " ", Toast.LENGTH_SHORT).show();
+    }
+
+    private void addImageUri(Uri imageUri) {
+        if (imageUris.size() < 3) {
+            imageUris.add(imageUri);
+        } else if (imageUris.size() == 3) {
+            for (int i = 0; i < 3; i++) {
+                if (imageUris.get(i) == null) {
+                    imageUris.set(i, imageUri);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void removeImageUri(View view) {
+        String[] id = getResources().getResourceName(view.getId()).split("_");
+        int index = Integer.parseInt(id[1]) - 1;
+        imageUris.remove(index);
+        imageUris.add(null);
+        refreshImages();
+    }
+
+    private void refreshImages() {
+        if (imageUris.size() == 0) {
+            imagesContainer.setVisibility(View.GONE);
+            return;
+        }
+        imagesContainer.setVisibility(View.VISIBLE);
+
+        ImageView imageView;
+        LinearLayout linearLayout = (LinearLayout) imagesContainer.getChildAt(0);
+        for (int i = 0; i < imageUris.size(); i++) {
+            imageView = (ImageView) linearLayout.getChildAt(i);
+            Glide.with(this)
+                    .load(imageUris.get(i))
+                    .into(imageView);
+        }
     }
 
     private File createImageFile() throws IOException {
@@ -167,6 +212,16 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                         String.valueOf(mMarker.getPosition().longitude));
 
                 addPostToDatabase(post);
+            }
+        });
+    }
+
+    private void initDiscardButton() {
+        findViewById(R.id.image_discard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageUris.clear();
+                imagesContainer.setVisibility(View.GONE);
             }
         });
     }
