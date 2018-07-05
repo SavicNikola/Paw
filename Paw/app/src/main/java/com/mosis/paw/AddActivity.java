@@ -43,7 +43,7 @@ import java.util.UUID;
 public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCallback {
 
     private static final int RC_CAMERA = 1;
-    private static final int RC_GALERY = 2;
+    private static final int RC_GALLERY = 2;
 
     private Spinner typeSpinner;
     private Spinner sizeSpinner;
@@ -57,6 +57,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     private LinearLayout imagesContainer;
 
     private String typeOfPost;
+    private int numOfSelectedImages;
 
     GoogleMap mMap;
     Marker mMarker;
@@ -90,7 +91,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CAMERA) {
             addImageUri(capturedImageUri);
-        } else if (requestCode == RC_GALERY) {
+        } else if (requestCode == RC_GALLERY) {
             if (data != null) {
                 if (data.getClipData() != null) {
                     for (int i = 0; i < data.getClipData().getItemCount(); i++) {
@@ -108,10 +109,12 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     private void addImageUri(Uri imageUri) {
         if (imageUris.size() < 3) {
             imageUris.add(imageUri);
+            numOfSelectedImages ++;
         } else if (imageUris.size() == 3) {
             for (int i = 0; i < 3; i++) {
                 if (imageUris.get(i) == null) {
                     imageUris.set(i, imageUri);
+                    numOfSelectedImages ++;
                     return;
                 }
             }
@@ -123,11 +126,12 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         int index = Integer.parseInt(id[1]) - 1;
         imageUris.remove(index);
         imageUris.add(null);
+        numOfSelectedImages--;
         refreshImages();
     }
 
     private void refreshImages() {
-        if (imageUris.size() == 0) {
+        if (numOfSelectedImages == 0) {
             imagesContainer.setVisibility(View.GONE);
             return;
         }
@@ -180,7 +184,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                 startActivityForResult(new Intent()
                         .setType("image/*")
                         .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                        .setAction(Intent.ACTION_GET_CONTENT), RC_GALERY);
+                        .setAction(Intent.ACTION_GET_CONTENT), RC_GALLERY);
             }
         });
     }
