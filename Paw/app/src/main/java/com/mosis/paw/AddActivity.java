@@ -40,6 +40,7 @@ import java.util.UUID;
 public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCallback {
 
     private static final int RC_CAMERA = 1;
+    private static final int RC_GALERY = 2;
 
     private Spinner typeSpinner;
     private Spinner sizeSpinner;
@@ -47,10 +48,9 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     private List<String> spinnerList;
     private ArrayAdapter<String> spinnerAdapter;
     private Uri capturedImageUri;
+    private ArrayList<Uri> imageUris = new ArrayList<>();
 
     private EditText descText;
-
-    private Button addButton;
 
     private String typeOfPost;
 
@@ -75,6 +75,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
 
         initAddButton();
         initBtnTakePicture();
+        initBtnSelectPhotos();
 
         InitMap();
     }
@@ -82,21 +83,31 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CAMERA) {
-            Toast.makeText(this, capturedImageUri.toString(), Toast.LENGTH_SHORT).show();
+            imageUris.add(capturedImageUri);
+        } else if (requestCode == RC_GALERY) {
+            if (data != null) {
+                if (data.getClipData() != null) {
+                    for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                        imageUris.add(data.getClipData().getItemAt(i).getUri());
+                    }
+                } else {
+                    imageUris.add(data.getData());
+                }
+            }
         }
+        Toast.makeText(this, imageUris.size()+" ", Toast.LENGTH_SHORT).show();
     }
 
     private File createImageFile() throws IOException {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String filename = "IMG_" + timestamp;
-        File imagesFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"Paw");
+        File imagesFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Paw");
         imagesFolder.mkdir();
         return File.createTempFile(filename, ".jpg", imagesFolder);
     }
 
     private void initBtnTakePicture() {
-        Button btnTakePicture = findViewById(R.id.btn_take_picture);
-        btnTakePicture.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_take_picture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -105,7 +116,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                     try {
                         photoFile = createImageFile();
                     } catch (IOException e) {
-                        Log.e("AddActivity", "Failed to create image file "+e.getMessage());
+                        Log.e("AddActivity", "Failed to create image file " + e.getMessage());
                     }
                     if (photoFile != null) {
                         capturedImageUri = FileProvider.getUriForFile(AddActivity.this, getString(R.string.file_provider_authority), photoFile);
@@ -117,8 +128,20 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         });
     }
 
+    private void initBtnSelectPhotos() {
+        findViewById(R.id.btn_select_photos).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent()
+                        .setType("image/*")
+                        .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                        .setAction(Intent.ACTION_GET_CONTENT), RC_GALERY);
+            }
+        });
+    }
+
     private void initAddButton() {
-        addButton = findViewById(R.id.add_post_btn);
+        Button addButton = findViewById(R.id.add_post_btn);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

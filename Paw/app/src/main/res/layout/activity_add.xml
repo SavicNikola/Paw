@@ -76,6 +76,34 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_box_background"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp">
+
+            <Spinner
+                android:id="@+id/size_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:spinnerMode="dropdown" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:onClick="showSizeSpinner"
+                android:src="@drawable/ic_arrow_down" />
+
+        </LinearLayout>
+
         <!--size spinner-->
         <LinearLayout
             android:layout_width="match_parent"
