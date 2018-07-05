@@ -68,10 +68,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         Friend friend = friendListFiltered.get(position);
 
         holder.name.setText(friend.getName());
-        holder.place.setText(friend.getPlace());
+        holder.place.setText(friend.getCity());
 
         Glide.with(mContext)
-                .load(friend.getImage())
+                .load(friend.getAvatar())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.thumbnail);
     }

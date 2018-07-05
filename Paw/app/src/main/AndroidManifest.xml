@@ -40,19 +40,21 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FoundActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".PostInformationActivity"></activity>
-        <activity android:name=".LoginActivity" >
-
-        </activity>/>
+        <activity android:name=".PostInformationActivity" />
+        <activity android:name=".LoginActivity" />
+        />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".ProfileActivity2"
-            android:theme="@style/ActivityNoActionBar"/>
+        <activity
+            android:name=".ProfileActivity2"
+            android:theme="@style/ActivityNoActionBar" />
+        <activity android:name=".MapFriendsActivity"></activity>
     </application>
 
 </manifest>

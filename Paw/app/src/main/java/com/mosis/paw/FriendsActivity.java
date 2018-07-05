@@ -12,9 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +47,89 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        DummyItems();
+        initShowUsersOnMapButton();
+
+        //DummyItems();
+        InitListFromDatabase();
+    }
+
+    void InitListFromDatabase() {
+        FirebaseSingleton.getInstance().databaseReference
+                .child("friends")
+                .child(Pawer.getInstance().getEmail())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        friendsList.clear();
+
+                        for (DataSnapshot friendSnapshot : dataSnapshot.getChildren()) {
+                            String friendEmail = friendSnapshot.getValue(String.class);
+
+                            FirebaseSingleton.getInstance().databaseReference
+                                    .child("users")
+                                    .child(friendEmail)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Friend friend = dataSnapshot.getValue(Friend.class);
+
+                                            friend.setAvatar(SwitchAvatar(friend.getAvatar()));
+
+                                            friendsList.add(friend);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     void DummyItems() {
-        Friend f = new Friend("Marko Markovic", R.drawable.avatar1, "Nis, Serbia");
-        Friend f1 = new Friend("Nikola Nikolic", R.drawable.avatar2, "Belgrade, Serbia");
-        Friend f2 = new Friend("Marko Stefanovic", R.drawable.avatar3, "Novi Sad, Serbia");
+        Friend f = new Friend("Marko Markovic", R.drawable.avatar1, "Nis, Serbia", "asd");
+        Friend f1 = new Friend("Nikola Nikolic", R.drawable.avatar2, "Belgrade, Serbia", "asd");
+        Friend f2 = new Friend("Marko Stefanovic", R.drawable.avatar3, "Novi Sad, Serbia", "asd");
 
         friendsList.add(f);
         friendsList.add(f1);
         friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+        friendsList.add(f2);
+    }
+
+    //TODO: da se refaktorise
+    private int SwitchAvatar(Integer input) {
+
+        int avatar = R.drawable.avatar1; //default
+        switch (input) {
+            case 1:
+                avatar = R.drawable.avatar1;
+                break;
+            case 2:
+                avatar = R.drawable.avatar2;
+                break;
+            case 3:
+                avatar = R.drawable.avatar3;
+                break;
+        }
+
+        return avatar;
     }
 
     private void EditToolbar() {
@@ -102,5 +180,17 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
     @Override
     public void onFriendSelected(Friend friend) {
         Toast.makeText(getApplicationContext(), "Selected:" + friend.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    void initShowUsersOnMapButton() {
+        Button mapBtn = findViewById(R.id.friends_show_map);
+
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapFriendsActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 }
