@@ -42,6 +42,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -72,6 +73,7 @@
                     android:paddingTop="0dp">
 
                     <TextView
+                        android:id="@+id/profile_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -80,7 +82,7 @@
                         android:textSize="22dp" />
 
                     <TextView
-                        android:id="@+id/profile_name"
+                        android:id="@+id/profile_place"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/nav_header_subtitle"

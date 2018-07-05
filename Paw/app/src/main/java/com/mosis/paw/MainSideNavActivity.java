@@ -54,6 +54,7 @@ public class MainSideNavActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+                intent.putExtra("UserID", Pawer.getInstance().getEmail());
                 v.getContext().startActivity(intent);
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
