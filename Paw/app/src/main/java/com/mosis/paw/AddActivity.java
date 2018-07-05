@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
 import com.mosis.paw.Model.Post;
 
 import java.io.File;
@@ -216,6 +217,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                         String.valueOf(mMarker.getPosition().longitude));
 
                 addPostToDatabase(post);
+                addImagesToStorage(post);
             }
         });
     }
@@ -246,6 +248,14 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                         Toast.makeText(AddActivity.this, "Posted failed!", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void addImagesToStorage(Post post) {
+        StorageReference ref = FirebaseSingleton.getInstance().storageReference.child(post.getId());
+        for (int i = 0; i < imageUris.size(); i++) {
+            if (imageUris.get(i) != null)
+                ref.child("img"+i).putFile(imageUris.get(i));
+        }
     }
 
     private void InitMap() {
