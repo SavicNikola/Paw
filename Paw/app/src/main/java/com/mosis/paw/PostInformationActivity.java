@@ -2,16 +2,26 @@ package com.mosis.paw;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.mosis.paw.Model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +34,14 @@ public class PostInformationActivity extends AppCompatActivity {
     LinearLayout dotsPanel;
     int dotsCounter;
     List<ImageView> dotsList;
+    Post post;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_information);
 
-        InitViewPager();
-        InitDots();
+        getPost();
 
         EditToolbar();
 
@@ -45,21 +55,66 @@ public class PostInformationActivity extends AppCompatActivity {
         });
     }
 
+    private void getPost() {
+        String postId = getIntent().getStringExtra("postId");
+        FirebaseSingleton.getInstance().databaseReference
+                .child("posts")
+                .child(postId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        post = dataSnapshot.getValue(Post.class);
+
+                        initData();
+                        InitViewPager();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void initData() {
+        ((TextView) findViewById(R.id.post_user_name)).setText(getIntent().getStringExtra("postCreator"));
+        ((TextView) findViewById(R.id.post_layout_desc)).setText(post.getDescription());
+    }
+
     private void InitViewPager() {
         viewPager = findViewById(R.id.post_info_view_pager);
-
-        List<Integer> picturesList = new ArrayList<>();
-        picturesList.add(R.drawable.picture1);
-        picturesList.add(R.drawable.picture2);
-        picturesList.add(R.drawable.picture3);
+        final List<Uri> picturesList = new ArrayList<>();
 
         viewPagerAdapter = new ViewPagerAdapter(this, picturesList);
 
         viewPager.setAdapter(viewPagerAdapter);
+
+        for (int i = 0; i < 3; i++) {
+            FirebaseSingleton.getInstance().storageReference
+                    .child(post.getId() + "/img"+i)
+                    .getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            picturesList.add(uri);
+                            viewPagerAdapter.notifyDataSetChanged();
+                            InitDots();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+            });
+        }
+
     }
 
     private void InitDots() {
+        if (viewPagerAdapter.getCount() == 0) return;   //todo: hide image view or show no image
+
         dotsPanel = findViewById(R.id.post_dots);
+        dotsPanel.removeAllViews();
         dotsCounter = viewPagerAdapter.getCount();
 
         dotsList = new ArrayList<>();

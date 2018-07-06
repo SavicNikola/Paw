@@ -143,7 +143,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, PostInformationActivity.class);
+                Intent intent = new Intent(mContext, PostInformationActivity.class)
+                        .putExtra("postId", post.getPostId())
+                        .putExtra("postCreator", post.getImePrezime());
                 mContext.startActivity(intent);
             }
         });
