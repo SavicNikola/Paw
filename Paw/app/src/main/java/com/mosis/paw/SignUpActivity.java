@@ -61,8 +61,8 @@ public class SignUpActivity extends BasicFirebaseOperations {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (validateInputs())
-//                    persistUser();
+                if (validateInputs())
+                    persistUser();
             }
         });
     }
@@ -76,14 +76,13 @@ public class SignUpActivity extends BasicFirebaseOperations {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(SignUpActivity.this, "Sign up successfull!", Toast.LENGTH_LONG).show();
-
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(SignUpActivity.this, "Sign up failed!", Toast.LENGTH_LONG).show();
-
                     }
                 });
 

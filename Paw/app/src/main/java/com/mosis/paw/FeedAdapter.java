@@ -2,6 +2,7 @@ package com.mosis.paw;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
 
     private Context mContext;
     private List<FeedItem> feedItemsList;
+    private StorageReference storage = FirebaseSingleton.getInstance().storageReference;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -78,7 +82,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
         holder.postDesc.setText(post.getPostDesc());
 
         // load picture
-        Glide.with(mContext).load(post.getPostPicture()).into(holder.postPicture);
+        storage.child(post.getPostId() + "/img0").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(mContext).load(uri).into(holder.postPicture);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Glide.with(mContext).load(R.drawable.no_image_available).into(holder.postPicture);
+            }
+        });
 
         if (post.getFavoruite())
             holder.favouriteButton.setImageResource(R.drawable.ic_post_favourite_fill);
