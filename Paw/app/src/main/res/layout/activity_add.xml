@@ -48,7 +48,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp">
             <Button
-                android:id="@+id/bSearch"
+                android:id="@+id/btn_take_picture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/blue_box_background"
@@ -61,7 +61,7 @@
                 android:drawableStart="@drawable/ic_camera"
                 android:textSize="12dp"/>
             <Button
-                android:id="@+id/cSearch"
+                android:id="@+id/btn_select_photos"
                 android:layout_marginLeft="7dp"
                 android:background="@drawable/blue_box_background"
                 android:layout_width="match_parent"
@@ -73,6 +73,63 @@
                 android:drawableLeft="@drawable/ic_photo_library"
                 android:drawableStart="@drawable/ic_photo_library"
                 android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_images"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/blue_box_background"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:id="@+id/image_1"
+                    android:onClick="removeImageUri"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/avatar1" />
+
+                <ImageView
+                    android:id="@+id/image_2"
+                    android:onClick="removeImageUri"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    tools:src="@drawable/avatar2" />
+
+                <ImageView
+                    android:id="@+id/image_3"
+                    android:onClick="removeImageUri"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/avatar3" />
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/image_discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_cancel_black_24dp" />
 
         </LinearLayout>
 
