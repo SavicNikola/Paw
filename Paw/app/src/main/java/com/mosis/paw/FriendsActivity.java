@@ -173,6 +173,10 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
                 return true;
             case R.id.friends_search:
                 return true;
+            case R.id.friends_add:
+                Intent intent = new Intent(this, AddFriendActivity.class);
+                startActivity(intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

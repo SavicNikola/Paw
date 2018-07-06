@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!--<uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,9 +28,7 @@
         <activity
             android:name=".MainSideNavActivity"
             android:label="Paw"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -43,7 +45,7 @@
             android:name=".FoundActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".PostInformationActivity" />
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,7 +57,8 @@
         <activity
             android:name=".ProfileActivity2"
             android:theme="@style/ActivityNoActionBar" />
-        <activity android:name=".MapFriendsActivity"></activity>
+        <activity android:name=".MapFriendsActivity" />
+        <activity android:name=".AddFriendActivity"></activity>
     </application>
 
 </manifest>
