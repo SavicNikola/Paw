@@ -1,15 +1,19 @@
 package com.mosis.paw;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -117,6 +121,19 @@ public class SettingsActivity extends BasicFirebaseOperations {
         etPassword = findViewById(R.id.settings_password);
         etPhone = findViewById(R.id.settings_phone);
         etCity = findViewById(R.id.settings_location);
+
+        SwitchCompat switchService = findViewById(R.id.switch_service);
+        switchService.setChecked(isMyServiceRunning(PawService.class));
+        switchService.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startService(new Intent(SettingsActivity.this, PawService.class));
+                } else {
+                    stopService(new Intent(SettingsActivity.this, PawService.class));
+                }
+            }
+        });
     }
 
     private void showChooserDialog() {
@@ -193,5 +210,15 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
     private int getAvatarDrawableId(int avatarNumber) {
         return getResources().getIdentifier("avatar" + avatarNumber, "drawable", getPackageName());
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,15 +1,20 @@
 package com.mosis.paw;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.ImageView;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.database.ChildEventListener;
@@ -18,31 +23,37 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.mosis.paw.Model.PawNotification;
 
-public class PawService extends IntentService {
+public class PawService extends Service {
 
+    private static final String TAG = "PawServiceTAG";
     private static final String NOTIFICATIONS = "notifications";
     private static final String NOTIFICATION_DATA = "notification_data";
     private static final String CHANNEL_ID = "paw_channel";
-    private static final int STANDARD_NOTIFICATION_ID = 1;
-
-    public PawService() {
-        super("PawService");
-    }
+    private static int STANDARD_NOTIFICATION_ID = 1;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate: ");
         setNotificationListener();
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand: ");
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private void setNotificationListener() {
@@ -52,14 +63,14 @@ public class PawService extends IntentService {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Integer notificationId = (Integer) dataSnapshot.getValue();
+                        String notificationId = (String) dataSnapshot.getValue();
 
                         if (notificationId == null)
                             return;
 
                         FirebaseSingleton.getInstance().databaseReference
                                 .child(NOTIFICATION_DATA)
-                                .child(notificationId.toString())
+                                .child(notificationId)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,11 +110,14 @@ public class PawService extends IntentService {
     private void displayNotification(PawNotification notification) {
         if (notification == null) return;
 
+        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(PawService.this, CHANNEL_ID)
                 .setContentTitle(notification.getType())
                 .setContentText(notification.getDescription())
                 .setColor(getResources().getColor(R.color.colorAccent))
-                .setSmallIcon(R.drawable.ic_paw_accent);
+                .setSmallIcon(R.drawable.ic_paw_accent)
+                .setSound(sound)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         Glide.with(this)
                 .asBitmap()
@@ -116,6 +130,8 @@ public class PawService extends IntentService {
                 });
 
         NotificationManagerCompat nmc = NotificationManagerCompat.from(this);
-        nmc.notify(STANDARD_NOTIFICATION_ID, builder.build());
+        nmc.notify(STANDARD_NOTIFICATION_ID++, builder.build());
     }
+
+
 }
