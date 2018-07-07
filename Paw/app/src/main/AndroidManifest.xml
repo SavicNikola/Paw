@@ -75,6 +75,7 @@
         <service
             android:name=".PawService"
             android:exported="false" />
+        <service android:name=".LocationTrackingService" />
     </application>
 
 </manifest>

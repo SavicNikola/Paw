@@ -122,15 +122,28 @@ public class SettingsActivity extends BasicFirebaseOperations {
         etPhone = findViewById(R.id.settings_phone);
         etCity = findViewById(R.id.settings_location);
 
-        SwitchCompat switchService = findViewById(R.id.switch_service);
-        switchService.setChecked(isMyServiceRunning(PawService.class));
-        switchService.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        SwitchCompat switchServiceNotifications = findViewById(R.id.switch_service);
+        switchServiceNotifications.setChecked(isMyServiceRunning(PawService.class));
+        switchServiceNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     startService(new Intent(SettingsActivity.this, PawService.class));
                 } else {
                     stopService(new Intent(SettingsActivity.this, PawService.class));
+                }
+            }
+        });
+
+        SwitchCompat switchServiceTracking = findViewById(R.id.switch_notifications);
+        switchServiceTracking.setChecked(isMyServiceRunning(LocationTrackingService.class));
+        switchServiceTracking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startService(new Intent(SettingsActivity.this, LocationTrackingService.class));
+                } else {
+                    stopService(new Intent(SettingsActivity.this, LocationTrackingService.class));
                 }
             }
         });
