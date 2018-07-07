@@ -6,23 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mosis.paw.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +32,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
     private ImageView imgAvatar;
     private AlertDialog dialog;
-    private int avatarChosen;
+    private int avatarChosen = Pawer.getInstance().getAvatar();
     private EditText etEmail;
     private EditText etName;
     private EditText etPassword;
@@ -89,6 +84,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
     private void initViews() {
         imgProfile = findViewById(R.id.settings_image);
+
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +121,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                avatarChosen = position+1;
+                avatarChosen = position + 1;
                 Glide.with(SettingsActivity.this).load(getAvatarDrawableId(avatarChosen)).into(imgAvatar);
                 dialog.dismiss();
             }
@@ -165,6 +161,22 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
                     }
                 });
+        if (imageUri != null) {
+            FirebaseSingleton.getInstance().storageReference
+                    .child("profile_images")
+                    .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                    .putFile(imageUri);
+        }
+
+        updatePawerSingleton();
+    }
+
+    private void updatePawerSingleton() {   //todo: ne update-uje odma, mora da se ponovo uloguje
+        Pawer.getInstance().setAvatar(avatarChosen);
+        Pawer.getInstance().setCity(etCity.getText().toString());
+        Pawer.getInstance().setPassword(etPassword.getText().toString());
+        Pawer.getInstance().setPhone(etPhone.getText().toString());
+        Pawer.getInstance().setName(etName.getText().toString());
     }
 
     private int getAvatarDrawableId(int avatarNumber) {
