@@ -96,8 +96,10 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Pawer friend = dataSnapshot.getValue(Pawer.class);
 
-                                            markersList.add(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
-                                            showMarkers();
+                                            if (friend.getLatitude() != null && friend.getLongitude() != null) {
+                                                markersList.add(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
+                                                showMarkers();
+                                            }
                                         }
 
                                         @Override
@@ -127,8 +129,10 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             Pawer user = userSnapshot.getValue(Pawer.class);
 
-                            markersList.add(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude())));
-                            showMarkers();
+                            if (user.getLatitude() != null && user.getLongitude() != null) {
+                                markersList.add(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude())));
+                                showMarkers();
+                            }
                         }
                     }
 
