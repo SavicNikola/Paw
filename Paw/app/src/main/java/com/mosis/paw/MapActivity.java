@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.mosis.paw.Model.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +164,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     void initSinglePostMarker(String postId) {
+        FirebaseSingleton.getInstance().databaseReference
+                .child("posts")
+                .child(postId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Post post = dataSnapshot.getValue(Post.class);
 
+                        markersList.clear();
+
+                        if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
+                            markersList.add(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude())));
+                            showMarkers();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     void initPostsMarkers() {

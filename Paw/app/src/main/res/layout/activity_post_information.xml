@@ -33,7 +33,7 @@
                 android:layout_weight="1"/>
 
             <Button
-                android:id="@+id/bSearch"
+                android:id="@+id/post_info_map_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:background="@drawable/blue_pill_background_fill"

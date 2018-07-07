@@ -36,10 +36,14 @@ public class PostInformationActivity extends AppCompatActivity {
     List<ImageView> dotsList;
     Post post;
 
+    String postId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_information);
+
+        postId = getIntent().getStringExtra("postId");
 
         getPost();
 
@@ -53,10 +57,22 @@ public class PostInformationActivity extends AppCompatActivity {
                 v.getContext().startActivity(intent);
             }
         });
+
+        Button postOnMap = findViewById(R.id.post_info_map_btn);
+        postOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapActivity.class);
+                //type of map (friends, post, feed)
+                intent.putExtra("TYPE", "post");
+                intent.putExtra("POSTID", postId);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     private void getPost() {
-        String postId = getIntent().getStringExtra("postId");
+
         FirebaseSingleton.getInstance().databaseReference
                 .child("posts")
                 .child(postId)
