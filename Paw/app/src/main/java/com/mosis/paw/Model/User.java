@@ -10,14 +10,14 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class User implements Parcelable{
 
     @Exclude
-    private String key;
+    protected String key;
 
-    private String name;
-    private String email;
-    private String password;
-    private String phone;
-    private String city;
-    private String imageUrl;
+    protected String name;
+    protected String email;
+    protected String password;
+    protected String phone;
+    protected String city;
+    protected String imageUrl;
 
     public User() {
 

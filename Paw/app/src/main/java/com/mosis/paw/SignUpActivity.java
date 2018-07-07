@@ -3,7 +3,6 @@ package com.mosis.paw;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.mosis.paw.Model.User;
 
 public class SignUpActivity extends BasicFirebaseOperations {
@@ -68,10 +65,10 @@ public class SignUpActivity extends BasicFirebaseOperations {
     }
 
     private void persistUser() {
-        User user = readUser();
+        Pawer pawer = new Pawer(readUser());
         getDatabaseReference().child(FIREBASE_CHILD_USERS)
-                .child(escapeSpecialCharacters(user.getEmail()))
-                .setValue(user)
+                .child(escapeSpecialCharacters(pawer.getEmail()))
+                .setValue(pawer)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

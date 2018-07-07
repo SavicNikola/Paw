@@ -106,9 +106,10 @@ public class ProfileActivity extends AppCompatActivity {
                         // TODO: profile image and profile btn
                         name.setText(pawer.getName());
                         place.setText(pawer.getCity());
-                        points.setText(pawer.getPoints());
-                        helps.setText(pawer.getHelps());
-                        friends.setText(pawer.getFriends());
+                        points.setText(pawer.getPoints() == null || pawer.getPoints().isEmpty() ? "0" : pawer.getPoints());
+                        helps.setText(pawer.getHelps() == null || pawer.getHelps().isEmpty() ? "0" : pawer.getHelps());
+                        friends.setText(pawer.getFriends() == null || pawer.getFriends().isEmpty() ? "0" : pawer.getFriends());
+
 
                         // TODO: u bazi da se doda helps za svakog i ovde da se ubaci
                         // TODO: da se prodje kroz tu listu i povuku postovi

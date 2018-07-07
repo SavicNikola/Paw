@@ -9,6 +9,7 @@ import com.mosis.paw.Model.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Pawer extends User {
 
@@ -54,6 +55,21 @@ public class Pawer extends User {
     private String longitude;
 
     private ArrayList<String> favourites;
+
+    public Pawer(User user) {
+        key = user.getKey();
+        name = user.getName();
+        email = user.getEmail();
+        password = user.getPassword();
+        phone = user.getPhone();
+        city = user.getCity();
+
+        this.points = "0";
+        this.helps = "0";
+        this.friends = "0";
+        this.avatar = new Random().nextInt(3)+1;    //generise od 0 do 3-1, mora se doda 1
+        favourites = new ArrayList<>();
+    }
 
     public ArrayList<String> getFavourites() {
         return favourites;

@@ -66,14 +66,11 @@ public class LoginActivity extends BasicFirebaseOperations {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //User user = dataSnapshot.getValue(User.class);
-                        //Pawer.getInstance().initValues(dataSnapshot.getValue(Pawer.getInstance().getClass()));
-
                         Pawer user = dataSnapshot.getValue(Pawer.class);
 
                         if (user == null) {
                             editEmail.setError(getString(R.string.error_wrong_email));
-                        } else if (!user.getPassword().equals(password)) {
+                        } else if (user.getPassword()!=null && !user.getPassword().equals(password)) {
                             editPassword.setError(getString(R.string.error_password_incorect));
                         } else {
 
@@ -81,14 +78,6 @@ public class LoginActivity extends BasicFirebaseOperations {
                             Pawer.getInstance().setFavourites(user.getFavourites());
 
                             startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
-//                            //ulogovan
-//                            User user2 = new User(null, "Pera Peric", "pera@gmail.com", "pera123",
-//                                    "0641234153", "Nis, Serbia",
-//                                    "http://cdn1.thr.com/sites/default/files/2017/08/gettyimages-630421358_-_h_2017.jpg");
-//                            startActivity(new Intent(LoginActivity.this, ProfileActivity2.class)
-//                                    .putExtra("user", user2)
-//                                    .putExtra(ProfileActivity2.PROFILE_TYPE, ProfileActivity2.PROFILE_NOT_FRIEND)); //TODO: testiranje, obrisati
-
                         }
                     }
 
