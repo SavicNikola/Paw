@@ -1,5 +1,6 @@
 package com.mosis.paw;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -65,6 +68,17 @@ public class ProfileActivity extends AppCompatActivity {
         helps = findViewById(R.id.profile_helps);
         friends = findViewById(R.id.profile_friends);
         profileImage = findViewById(R.id.image_profile);
+
+        FirebaseSingleton.getInstance().storageReference
+                .child("profile_images")
+                .child(FirebaseSingleton.escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(ProfileActivity.this).load(uri).into(profileImage);
+                    }
+                });
     }
 
     private void InitRecycleView() {

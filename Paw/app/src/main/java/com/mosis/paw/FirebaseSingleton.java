@@ -18,4 +18,15 @@ public class FirebaseSingleton {
     }
 
     public static FirebaseSingleton getInstance() { return instance; }
+
+
+    public static String escapeSpecialCharacters(String email) {
+        return email.replaceAll("%", "%25")
+                .replaceAll("\\.", "%2E")
+                .replaceAll("#", "%23")
+                .replaceAll("\\$", "%24")
+                .replaceAll("/", "%2F")
+                .replaceAll("\\[", "%5B")
+                .replaceAll("]", "%5D");
+    }
 }

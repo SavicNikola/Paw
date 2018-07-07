@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -85,6 +86,16 @@ public class SettingsActivity extends BasicFirebaseOperations {
     private void initViews() {
         imgProfile = findViewById(R.id.settings_image);
 
+        FirebaseSingleton.getInstance().storageReference
+                .child("profile_images")
+                .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(SettingsActivity.this).load(uri).into(imgProfile);
+                    }
+                });
         imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
