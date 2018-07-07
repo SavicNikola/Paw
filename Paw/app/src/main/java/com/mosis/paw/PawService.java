@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.mosis.paw.Model.PawNotification;
 
+import java.util.ArrayList;
+
 public class PawService extends Service {
 
     private static final String TAG = "PawServiceTAG";
@@ -30,6 +32,8 @@ public class PawService extends Service {
     private static final String NOTIFICATION_DATA = "notification_data";
     private static final String CHANNEL_ID = "paw_channel";
     private static int STANDARD_NOTIFICATION_ID = 1;
+
+    private ChildEventListener childEventListener;
 
     @Override
     public void onCreate() {
@@ -47,6 +51,12 @@ public class PawService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        FirebaseSingleton.getInstance().databaseReference
+                .child(NOTIFICATIONS)
+                .child(Pawer.getInstance().getEscapedEmail())
+                .removeEventListener(childEventListener);
+
         Log.d(TAG, "onDestroy: ");
     }
 
@@ -57,54 +67,59 @@ public class PawService extends Service {
     }
 
     private void setNotificationListener() {
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String notificationId = (String) dataSnapshot.getValue();
+
+                if (notificationId == null)
+                    return;
+
+                FirebaseSingleton.getInstance().databaseReference
+                        .child(NOTIFICATION_DATA)
+                        .child(notificationId)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                PawNotification notification = dataSnapshot.getValue(PawNotification.class);
+                                if (notification!=null && !notification.isRead()) {
+                                    displayNotification(notification);
+                                }
+                            }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
         FirebaseSingleton.getInstance().databaseReference
                 .child(NOTIFICATIONS)
                 .child(Pawer.getInstance().getEscapedEmail())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        String notificationId = (String) dataSnapshot.getValue();
-
-                        if (notificationId == null)
-                            return;
-
-                        FirebaseSingleton.getInstance().databaseReference
-                                .child(NOTIFICATION_DATA)
-                                .child(notificationId)
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        PawNotification notification = dataSnapshot.getValue(PawNotification.class);
-                                        displayNotification(notification);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                .addChildEventListener(childEventListener);
     }
 
     private void displayNotification(PawNotification notification) {

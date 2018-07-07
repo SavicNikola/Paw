@@ -9,6 +9,8 @@ public class PawNotification {
     private String picture;
     private String description;
     private String type;
+    private boolean read;
+
 
     public static final String FOUND = "found";
     public static final String ADOPT = "adopt";
@@ -25,6 +27,7 @@ public class PawNotification {
         this.picture = picture;
         this.description = description;
         this.type = type;
+        read = false;
     }
 
     public String getId() {
@@ -81,5 +84,13 @@ public class PawNotification {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }
