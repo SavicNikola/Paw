@@ -74,22 +74,11 @@ public class ProfileActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.profile_helps_recycler_view);
 
         feedList = new ArrayList<>();
-
-//        //proba glupi podaci
-//
-//        FeedItem item = new FeedItem("Marko Markovic", R.drawable.avatar1, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.picture1, FeedTypeEnum.FOUND, true);
-//        FeedItem item2 = new FeedItem("Nikola Niki", R.drawable.avatar2, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.picture2, FeedTypeEnum.LOST, true);
-//        FeedItem item3 = new FeedItem("Stefan Steki", R.drawable.avatar3, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.picture3, FeedTypeEnum.ADOPT, true);
-//        feedList.add(item);
-//        feedList.add(item2);
-//        feedList.add(item3);
-
         adapter = new ProfileHelpsAdapter(this, feedList);
+        recyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setAdapter(adapter);
 
         InitFromDatabase();
     }

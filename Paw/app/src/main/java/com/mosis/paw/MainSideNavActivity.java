@@ -19,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainSideNavActivity extends AppCompatActivity
@@ -42,12 +44,17 @@ public class MainSideNavActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        initNavMenu();
 
+        // startujemo sa lost feed-om
+        ChangeFragment(R.id.nav_found_feed);
+    }
+
+    private void initNavMenu() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         // uzme se header od nav bara da bi nakacili klik ka profilu
         View hearderview = navigationView.getHeaderView(0);
-
         // kacimo klik ka profilu
         LinearLayout ln = (LinearLayout) hearderview.findViewById(R.id.nav_header);
         ln.setOnClickListener(new View.OnClickListener() {
@@ -62,8 +69,11 @@ public class MainSideNavActivity extends AppCompatActivity
             }
         });
 
-        // startujemo sa lost feed-om
-        ChangeFragment(R.id.nav_found_feed);
+        final int a = R.drawable.avatar1;
+        final int avatarId = getResources().getIdentifier("avatar"+Pawer.getInstance().getAvatar(),"drawable",getPackageName());
+        ((ImageView) hearderview.findViewById(R.id.nav_header_image)).setImageDrawable(getResources().getDrawable(avatarId));
+        ((TextView) hearderview.findViewById(R.id.nav_header_user_name)).setText(Pawer.getInstance().getName());
+        ((TextView) hearderview.findViewById(R.id.nav_header_user_city)).setText(Pawer.getInstance().getCity());
     }
 
     @Override

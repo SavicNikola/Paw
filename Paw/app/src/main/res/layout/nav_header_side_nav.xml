@@ -15,7 +15,7 @@
     android:id="@+id/nav_header">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/nav_header_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_weight="0"
@@ -33,6 +33,7 @@
         android:paddingTop="0dp">
 
         <TextView
+            android:id="@+id/nav_header_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -41,7 +42,7 @@
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/nav_header_user_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nav_header_subtitle"
