@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseSingleton.getInstance().storageReference
                 .child("profile_images")
-                .child(FirebaseSingleton.escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .child(Pawer.getInstance().getEscapedEmail())
                 .getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override

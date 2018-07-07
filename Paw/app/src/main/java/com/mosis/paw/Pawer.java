@@ -130,4 +130,8 @@ public class Pawer extends User {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    public String getEscapedEmail() {
+        return FirebaseSingleton.escapeSpecialCharacters(email);
+    }
 }

@@ -29,8 +29,8 @@
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider_authority"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
@@ -69,8 +69,12 @@
             android:name=".ProfileActivity2"
             android:theme="@style/ActivityNoActionBar" />
         <activity android:name=".MapFriendsActivity" />
-        <activity android:name=".AddFriendActivity"/>
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".AddFriendActivity" />
+        <activity android:name=".SettingsActivity" />
+
+        <service
+            android:name=".PawService"
+            android:exported="false" />
     </application>
 
 </manifest>
