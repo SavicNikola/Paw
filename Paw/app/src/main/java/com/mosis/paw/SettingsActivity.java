@@ -5,29 +5,44 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.mosis.paw.Model.User;
 
-public class SettingsActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SettingsActivity extends BasicFirebaseOperations {
 
     private static final int MENU_ITEM_SAVE = 1;
     private static final int RC_GALLERY = 1;
 
     private ImageView imgProfile;
     private Uri imageUri;
+
+    private ImageView imgAvatar;
+    private AlertDialog dialog;
+    private int avatarChosen;
     private EditText etEmail;
     private EditText etName;
     private EditText etPassword;
     private EditText etPhone;
     private EditText etCity;
-    private ImageView imgAvatar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_ITEM_SAVE, 0, "Save");
+        menu.add(0, MENU_ITEM_SAVE, 0, "Save").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -82,12 +97,44 @@ public class SettingsActivity extends AppCompatActivity {
                         .setAction(Intent.ACTION_GET_CONTENT), RC_GALLERY);
             }
         });
+        imgAvatar = findViewById(R.id.settings_avatar);
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChooserDialog();
+            }
+        });
         etEmail = findViewById(R.id.settings_email);
         etName = findViewById(R.id.settings_name);
         etPassword = findViewById(R.id.settings_password);
         etPhone = findViewById(R.id.settings_phone);
         etCity = findViewById(R.id.settings_location);
-        imgAvatar = findViewById(R.id.settings_avatar);
+    }
+
+    private void showChooserDialog() {
+        GridView gridView = new GridView(this);
+
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i = 1; i < 4; i++) {
+            list.add(getAvatarDrawableId(i));
+        }
+
+        AvatarChooserAdapter adapter = new AvatarChooserAdapter(this, R.layout.avatar_image_layout, list);
+        gridView.setAdapter(adapter);
+        gridView.setNumColumns(3);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                avatarChosen = position+1;
+                Glide.with(SettingsActivity.this).load(getAvatarDrawableId(avatarChosen)).into(imgAvatar);
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(gridView);
+        builder.setTitle("Select avatar");
+        dialog = builder.show();
     }
 
     private void fillViewsWithData() {
@@ -96,11 +143,31 @@ public class SettingsActivity extends AppCompatActivity {
         etPassword.setText(Pawer.getInstance().getPassword());
         etPhone.setText(Pawer.getInstance().getPhone());
         etCity.setText(Pawer.getInstance().getCity());
-        final int avatarId = getResources().getIdentifier("avatar" + Pawer.getInstance().getAvatar(), "drawable", getPackageName());
-        Glide.with(this).load(avatarId).into(imgAvatar);
+        Glide.with(this).load(getAvatarDrawableId(Pawer.getInstance().getAvatar())).into(imgAvatar);
     }
 
     private void saveChanges() {
-        Toast.makeText(this, "Saving", Toast.LENGTH_SHORT).show();
+        FirebaseSingleton.getInstance().databaseReference
+                .child("users")
+                .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        dataSnapshot.child("avatar").getRef().setValue(avatarChosen);
+                        dataSnapshot.child("city").getRef().setValue(etCity.getText().toString());
+                        dataSnapshot.child("password").getRef().setValue(etPassword.getText().toString());
+                        dataSnapshot.child("phone").getRef().setValue(etPhone.getText().toString());
+                        dataSnapshot.child("name").getRef().setValue(etName.getText().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private int getAvatarDrawableId(int avatarNumber) {
+        return getResources().getIdentifier("avatar" + avatarNumber, "drawable", getPackageName());
     }
 }

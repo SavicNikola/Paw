@@ -93,6 +93,7 @@ public class LoginActivity extends BasicFirebaseOperations {
                             Pawer.getInstance().setAvatar(user.getAvatar());
                             Pawer.getInstance().setPassword(user.getPassword());
                             Pawer.getInstance().setPhone(user.getPhone());
+                            Pawer.getInstance().setKey(user.getKey());
 
                             startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
                         }
