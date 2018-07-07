@@ -19,11 +19,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
     private List<LatLng> markersList;
+
+    private String typeOfMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,26 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
 
         markersList = new ArrayList<LatLng>();
 
-        EditToolbar();
+        Bundle extras = getIntent().getExtras();
+        typeOfMap = extras == null ? null : extras.getString("TYPE", null);
 
-        initFriendsMarkers();
+        if (typeOfMap != null)
+            switch (typeOfMap) {
+                case "friends":
+                    EditToolbar("Friends on map");
+                    initFriendsMarkers();
+                    break;
+                case "post":
+                    EditToolbar("Post on map");
+                    String postId = extras.getString("POSTID", null);
+                    if (postId != null)
+                        initSinglePostMarker(postId);
+                    break;
+                case "feed":
+                    EditToolbar("Posts on map");
+                    initPostsMarkers();
+                    break;
+            }
     }
 
     @Override
@@ -51,9 +70,9 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    private void EditToolbar() {
+    private void EditToolbar(String title) {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
-        getSupportActionBar().setTitle("Friends on map");
+        getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -143,6 +162,14 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
                 });
     }
 
+    void initSinglePostMarker(String postId) {
+
+    }
+
+    void initPostsMarkers() {
+
+    }
+
     void showMarkers() {
 
         mMap.clear();
@@ -155,7 +182,8 @@ public class MapFriendsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.users_map_menu, menu);
+        if (typeOfMap.equals("friends"))
+            getMenuInflater().inflate(R.menu.users_map_menu, menu);
 
         return true;
     }
