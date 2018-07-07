@@ -84,6 +84,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
 
     private void initViews() {
+        findViewById(R.id.linear_parent).requestFocus();
         imgProfile = findViewById(R.id.settings_image);
 
         FirebaseSingleton.getInstance().storageReference
