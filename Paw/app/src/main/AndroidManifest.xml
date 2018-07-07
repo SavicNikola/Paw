@@ -69,7 +69,8 @@
             android:name=".ProfileActivity2"
             android:theme="@style/ActivityNoActionBar" />
         <activity android:name=".MapFriendsActivity" />
-        <activity android:name=".AddFriendActivity"></activity>
+        <activity android:name=".AddFriendActivity"/>
+        <activity android:name=".SettingsActivity"/>
     </application>
 
 </manifest>

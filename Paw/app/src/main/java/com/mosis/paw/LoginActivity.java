@@ -90,7 +90,9 @@ public class LoginActivity extends BasicFirebaseOperations {
                             Pawer.getInstance().setFavourites(user.getFavourites());
                             Pawer.getInstance().setName(user.getName());
                             Pawer.getInstance().setCity(user.getCity());
-                            Pawer.getInstance().setAvatar(user.getAvatar());    //todo: dodati i ostale po potrebi
+                            Pawer.getInstance().setAvatar(user.getAvatar());
+                            Pawer.getInstance().setPassword(user.getPassword());
+                            Pawer.getInstance().setPhone(user.getPhone());
 
                             startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
                         }

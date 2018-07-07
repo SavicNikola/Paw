@@ -70,7 +70,6 @@ public class MainSideNavActivity extends AppCompatActivity
         });
 
         //header data
-        final int a = R.drawable.avatar1;
         final int avatarId = getResources().getIdentifier("avatar" + Pawer.getInstance().getAvatar(), "drawable", getPackageName());
         ((ImageView) hearderview.findViewById(R.id.nav_header_image)).setImageDrawable(getResources().getDrawable(avatarId));
         ((TextView) hearderview.findViewById(R.id.nav_header_user_name)).setText(Pawer.getInstance().getName());
@@ -97,12 +96,6 @@ public class MainSideNavActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_logout) {
-            startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
-            finish();
-            return true;
-        }
-
         ChangeFragment(item.getItemId());
 
         return super.onOptionsItemSelected(item);
@@ -111,12 +104,6 @@ public class MainSideNavActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.nav_logout) {
-            startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
-            finish();
-            return true;
-        }
         ChangeFragment(item.getItemId());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -167,6 +154,26 @@ public class MainSideNavActivity extends AppCompatActivity
             case R.id.action_filters:
                 intent = new Intent(this, FiltersActivity.class);
                 this.startActivity(intent);
+                break;
+
+            case R.id.action_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                break;
+
+            case R.id.nav_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                break;
+
+            case R.id.action_logout:
+                startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
+                finish();
+                break;
+
+            case R.id.nav_logout:
+                startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
+                finish();
                 break;
         }
 

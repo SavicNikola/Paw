@@ -34,4 +34,8 @@
     <string name="file_provider_authority"
         translatable="false">com.mosis.paw.fileprovider
     </string>
+    <string name="account">Account</string>
+    <string name="application">Application</string>
+    <string name="switch_service_status">Switch service status</string>
+    <string name="notifications">Notifications</string>
 </resources>
