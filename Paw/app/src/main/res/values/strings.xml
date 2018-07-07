@@ -38,4 +38,5 @@
     <string name="application">Application</string>
     <string name="switch_service_status">Switch service status</string>
     <string name="notifications">Notifications</string>
+    <string name="gps_tracking">GPS tracking</string>
 </resources>

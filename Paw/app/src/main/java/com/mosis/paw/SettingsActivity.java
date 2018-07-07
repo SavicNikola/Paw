@@ -122,7 +122,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
         etPhone = findViewById(R.id.settings_phone);
         etCity = findViewById(R.id.settings_location);
 
-        SwitchCompat switchServiceNotifications = findViewById(R.id.switch_service);
+        SwitchCompat switchServiceNotifications = findViewById(R.id.switch_notifications);
         switchServiceNotifications.setChecked(isMyServiceRunning(PawService.class));
         switchServiceNotifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -135,7 +135,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
             }
         });
 
-        SwitchCompat switchServiceTracking = findViewById(R.id.switch_notifications);
+        SwitchCompat switchServiceTracking = findViewById(R.id.switch_tracking);
         switchServiceTracking.setChecked(isMyServiceRunning(LocationTrackingService.class));
         switchServiceTracking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

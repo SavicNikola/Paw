@@ -64,8 +64,8 @@ public class LocationTrackingService extends Service {
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                dataSnapshot.child("latitude").getRef().setValue(locationResult.getLastLocation().getLatitude());
-                                dataSnapshot.child("longitude").getRef().setValue(locationResult.getLastLocation().getLongitude());
+                                dataSnapshot.child("latitude").getRef().setValue(String.valueOf(locationResult.getLastLocation().getLatitude()));
+                                dataSnapshot.child("longitude").getRef().setValue(String.valueOf(locationResult.getLastLocation().getLongitude()));
                             }
 
                             @Override
