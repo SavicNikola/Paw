@@ -67,7 +67,7 @@ public class Pawer extends User {
         this.points = "0";
         this.helps = "0";
         this.friends = "0";
-        this.avatar = new Random().nextInt(3)+1;    //generise od 0 do 3-1, mora se doda 1
+        this.avatar = new Random().nextInt(3)+1;    //generise od 0 do 3-1, mora se doda 1 //todo:promeni kasnije kad se doda jos avatara
         favourites = new ArrayList<>();
     }
 
@@ -130,5 +130,4 @@ public class Pawer extends User {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
-
 }

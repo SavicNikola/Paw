@@ -69,11 +69,13 @@ public class MainSideNavActivity extends AppCompatActivity
             }
         });
 
+        //header data
         final int a = R.drawable.avatar1;
-        final int avatarId = getResources().getIdentifier("avatar"+Pawer.getInstance().getAvatar(),"drawable",getPackageName());
+        final int avatarId = getResources().getIdentifier("avatar" + Pawer.getInstance().getAvatar(), "drawable", getPackageName());
         ((ImageView) hearderview.findViewById(R.id.nav_header_image)).setImageDrawable(getResources().getDrawable(avatarId));
         ((TextView) hearderview.findViewById(R.id.nav_header_user_name)).setText(Pawer.getInstance().getName());
         ((TextView) hearderview.findViewById(R.id.nav_header_user_city)).setText(Pawer.getInstance().getCity());
+
     }
 
     @Override
@@ -95,9 +97,11 @@ public class MainSideNavActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        if (item.getItemId() == R.id.action_logout) {
+            startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
+            finish();
+            return true;
+        }
 
         ChangeFragment(item.getItemId());
 
@@ -108,6 +112,11 @@ public class MainSideNavActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
+        if (item.getItemId() == R.id.nav_logout) {
+            startActivity(new Intent(MainSideNavActivity.this, LoginActivity.class).setAction("logout"));
+            finish();
+            return true;
+        }
         ChangeFragment(item.getItemId());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -115,7 +124,7 @@ public class MainSideNavActivity extends AppCompatActivity
         return true;
     }
 
-    private void ChangeFragment (final int selectedId) {
+    private void ChangeFragment(final int selectedId) {
 
         Fragment frag = null;
         Bundle bundle = null;

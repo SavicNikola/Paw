@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.mosis.paw.Model.User;
 
 public class LoginActivity extends BasicFirebaseOperations {
+
+    private EditText editEmail;
+    private  EditText editPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,15 @@ public class LoginActivity extends BasicFirebaseOperations {
 
         EditToolbar();
         initializeViews();
+        checkIfLogOutIntent();
+    }
+
+    private void checkIfLogOutIntent() {
+        if (getIntent().getAction() != null && getIntent().getAction().equals("logout")) {
+            editEmail.setText("");
+            editPassword.setText("");
+//            Pawer.getInstance().destroy(); //todo: treba li da se unisti singleton instanca???
+        }
     }
 
     private void EditToolbar() {
@@ -30,6 +41,9 @@ public class LoginActivity extends BasicFirebaseOperations {
     }
 
     private void initializeViews() {
+        editEmail = findViewById(R.id.edit_email);
+        editPassword = findViewById(R.id.edit_password);
+
         Button btnSignUp = findViewById(R.id.btn_signUp);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,8 +71,6 @@ public class LoginActivity extends BasicFirebaseOperations {
     }
 
     private void logIn() {
-        final EditText editEmail = findViewById(R.id.edit_email);
-        final EditText editPassword = findViewById(R.id.edit_password);
         String email = editEmail.getText().toString();
         final String password = editPassword.getText().toString();
 
