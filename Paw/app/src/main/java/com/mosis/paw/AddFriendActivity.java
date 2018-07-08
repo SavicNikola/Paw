@@ -7,12 +7,15 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +26,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -248,8 +255,6 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
 
     @Override
     public void onItemSelected(BluetoothDevice item) {
-        Toast.makeText(this, item.getName(), Toast.LENGTH_SHORT).show();
-
         mBluetoothAdapter.cancelDiscovery();
 
         if (paired.contains(item))
@@ -263,10 +268,12 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
 
     @Override
     public void onItemLongSelected(BluetoothDevice item) {
-        String poruka = "Cao cao";
+        String poruka = "1 " + Pawer.getInstance().getEmail();
 
-        if (sendReceive != null)
+        if (sendReceive != null) {
             sendReceive.write(poruka.getBytes());
+            Toast.makeText(this, "Sending friend request to " + item.getName(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,13 +300,124 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
                 case STATE_MESSAGE_RECEIVED:
                     byte[] readBuff = (byte[]) msg.obj;
                     String poruka = new String(readBuff, 0, msg.arg1);
-                    Toast.makeText(AddFriendActivity.this, poruka, Toast.LENGTH_SHORT).show();
+
+                    String[] parts = poruka.split(" ");
+                    if (parts[0].equals("1"))
+                        friendRequestReceive(parts[1]);
+                    else
+                        requestAnswer(parts[1], parts[2]);
                     break;
             }
 
             return true;
         }
     });
+
+    private void friendRequestReceive(final String user) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);;
+
+        builder.setTitle("Friend request!")
+                .setMessage("Do you want to accept friendship from " + user + "?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String odgovor = "2 yes " + Pawer.getInstance().getEmail();
+                        if (sendReceive != null)
+                            sendReceive.write(odgovor.getBytes());
+
+                        //ubacimo prijateljstvo za izmedju usera i nas
+                        FirebaseSingleton.getInstance().databaseReference
+                                .child("friends")
+                                .child(Pawer.getInstance().getEmail())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
+
+                                        if (list == null)
+                                            list = new ArrayList<>();
+
+                                        list.add(user);
+
+                                        FirebaseSingleton.getInstance().databaseReference
+                                                .child("friends")
+                                                .child(Pawer.getInstance().getEmail())
+                                                .setValue(list);
+
+                                        Toast.makeText(AddFriendActivity.this, "You are now friend with " + user, Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String odgovor = "2 no " + Pawer.getInstance().getEmail();
+                        if (sendReceive != null)
+                            sendReceive.write(odgovor.getBytes());
+                    }
+                })
+                .setIcon(R.drawable.ic_friends_add)
+                .show();
+    }
+
+    private void requestAnswer(final String answer, final String user) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);;
+
+        String message;
+        if (answer.equals("yes")) {
+            message = "User " + user + " accepted you friendship!";
+            builder.setIcon(R.drawable.ic_face_very_happy);
+
+            //ubacimo prijateljstvo za izmedju usera i nas
+            FirebaseSingleton.getInstance().databaseReference
+                    .child("friends")
+                    .child(Pawer.getInstance().getEmail())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
+
+                            if (list == null)
+                                list = new ArrayList<>();
+
+                            list.add(user);
+
+                            FirebaseSingleton.getInstance().databaseReference
+                                    .child("friends")
+                                    .child(Pawer.getInstance().getEmail())
+                                    .setValue(list);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        }
+        else {
+            message = "User " + user + " dismiss you friendship!";
+            builder.setIcon(R.drawable.ic_face_sad);
+        }
+
+        builder.setTitle("Request response!")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (answer.equals("yes"))
+                            Toast.makeText(AddFriendActivity.this, "You are now friend with " + user, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        builder.show();
+    }
 
     private class ServerClass extends Thread {
 
