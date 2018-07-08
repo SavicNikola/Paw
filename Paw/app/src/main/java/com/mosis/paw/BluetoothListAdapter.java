@@ -36,6 +36,14 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
                     listener.onItemSelected(bluetoothList.get(getAdapterPosition()));
                 }
             });
+
+            v.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onItemLongSelected(bluetoothList.get(getAdapterPosition()));
+                    return false;
+                }
+            });
         }
     }
 
@@ -69,5 +77,6 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
 
     public interface BluetoothAdapterListener {
         void onItemSelected(BluetoothDevice item);
+        void onItemLongSelected(BluetoothDevice item);
     }
 }
