@@ -55,6 +55,11 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
         initData();
 
         //TODO: CHANGE READ ON TRUE
+        FirebaseSingleton.getInstance().databaseReference
+                .child("notification_data")
+                .child(notificationID)
+                .child("read")
+                .setValue(true);
     }
 
     @Override
