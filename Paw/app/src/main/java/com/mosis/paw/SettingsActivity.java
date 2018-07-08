@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,17 +18,19 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsActivity extends BasicFirebaseOperations {
+public class SettingsActivity extends AppCompatActivity {
 
     private static final int MENU_ITEM_SAVE = 1;
     private static final int RC_GALLERY = 1;
@@ -93,7 +96,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
 
         FirebaseSingleton.getInstance().storageReference
                 .child("profile_images")
-                .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .child(Pawer.getInstance().getEscapedEmail())
                 .getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
@@ -187,7 +190,7 @@ public class SettingsActivity extends BasicFirebaseOperations {
     private void saveChanges() {
         FirebaseSingleton.getInstance().databaseReference
                 .child("users")
-                .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
+                .child(Pawer.getInstance().getEscapedEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -206,8 +209,14 @@ public class SettingsActivity extends BasicFirebaseOperations {
         if (imageUri != null) {
             FirebaseSingleton.getInstance().storageReference
                     .child("profile_images")
-                    .child(escapeSpecialCharacters(Pawer.getInstance().getEmail()))
-                    .putFile(imageUri);
+                    .child(Pawer.getInstance().getEscapedEmail())
+                    .putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(SettingsActivity.this, "Changes saved", Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
 
         updatePawerSingleton();

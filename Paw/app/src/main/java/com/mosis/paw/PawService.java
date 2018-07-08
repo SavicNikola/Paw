@@ -132,6 +132,7 @@ public class PawService extends Service {
                 .setColor(getResources().getColor(R.color.colorAccent))
                 .setSmallIcon(R.drawable.ic_paw_accent)
                 .setSound(sound)
+                .setOnlyAlertOnce(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         Glide.with(this)
