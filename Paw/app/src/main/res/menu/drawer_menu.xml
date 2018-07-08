@@ -30,6 +30,11 @@
         android:checkableBehavior="single">
 
         <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/ic_notifications"
+            android:title="Notifications" />
+
+        <item
             android:id="@+id/nav_friends"
             android:icon="@drawable/ic_friends"
             android:title="Friends" />

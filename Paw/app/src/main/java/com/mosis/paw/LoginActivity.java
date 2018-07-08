@@ -12,6 +12,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends BasicFirebaseOperations {
 
     private EditText editEmail;
@@ -87,13 +89,19 @@ public class LoginActivity extends BasicFirebaseOperations {
                         } else {
 
                             Pawer.getInstance().setEmail(user.getEmail());
-                            Pawer.getInstance().setFavourites(user.getFavourites());
+
+                            if (user.getFavourites() == null)
+                                Pawer.getInstance().setFavourites(new ArrayList<String>());
+                            else
+                                Pawer.getInstance().setFavourites(user.getFavourites());
+
                             Pawer.getInstance().setName(user.getName());
                             Pawer.getInstance().setCity(user.getCity());
                             Pawer.getInstance().setAvatar(user.getAvatar());
                             Pawer.getInstance().setPassword(user.getPassword());
                             Pawer.getInstance().setPhone(user.getPhone());
                             Pawer.getInstance().setKey(user.getKey());
+                            Pawer.getInstance().setPoints(user.getPoints());
 
                             startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
                         }

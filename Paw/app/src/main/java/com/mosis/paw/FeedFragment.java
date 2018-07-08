@@ -13,6 +13,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.util.DataUtils;
@@ -35,6 +36,7 @@ public class FeedFragment extends Fragment {
     private List<FeedItem> feedList;
 
     private FloatingActionButton fab;
+    private Button filtersButton;
 
     private String feedName;
 
@@ -74,21 +76,51 @@ public class FeedFragment extends Fragment {
                 break;
         }
 
+        filtersButton = mView.findViewById(R.id.feed_filters_btn);
+        initFiltersButton();
         InitRecycleView();
         InitFabButton();
     }
 
+    private void initFiltersButton() {
+
+        String text = "FILTERS:     ";
+        if (Pawer.getInstance().getFilter().getColor().equals("All") &&
+            Pawer.getInstance().getFilter().getSize().equals("All") &&
+            Pawer.getInstance().getFilter().getType().equals("All")) {
+            text += "ALL";
+        } else {
+            if (!Pawer.getInstance().getFilter().getType().equals("All")) {
+                text += Pawer.getInstance().getFilter().getType();
+                text += "  |  ";
+            }
+
+            if (!Pawer.getInstance().getFilter().getColor().equals("All")) {
+                text += Pawer.getInstance().getFilter().getColor();
+                text += "  |  ";
+            }
+
+            if (!Pawer.getInstance().getFilter().getSize().equals("All")) {
+                text += Pawer.getInstance().getFilter().getSize();
+                text += "  |  ";
+            }
+
+            text = text.substring(0, text.length() - 5);
+        }
+
+        filtersButton.setText(text);
+
+        filtersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FiltersActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void InitRecycleView() {
         recyclerView = (RecyclerView) mView.findViewById(R.id.feed_recycler_view);
-
-//        //proba glupi podaci
-//        feedList = new ArrayList<>();
-//        FeedItem item = new FeedItem("Marko Markovic", R.drawable.avatar1, "2h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu.. Klikom na post dobice vise informacija..", R.drawable.picture1, FeedTypeEnum.FOUND, true);
-//        FeedItem item2 = new FeedItem("Nikola Niki", R.drawable.avatar2, "1h ago", "Korisnikov opis posta, na primer kratke informacije o izgubljenom ljubimcu..", R.drawable.picture2, FeedTypeEnum.LOST, true);
-//        FeedItem item3 = new FeedItem("Stefan Steki", R.drawable.avatar3, "2h ago", "Klikom na post dobice vise informacija..", R.drawable.picture3, FeedTypeEnum.ADOPT, true);
-//        feedList.add(item);
-//        feedList.add(item2);
-//        feedList.add(item3);
 
         feedList = new ArrayList<FeedItem>();
 
@@ -122,38 +154,41 @@ public class FeedFragment extends Fragment {
                     // TODO: handle the post
                     post = postSnapshot.getValue(Post.class);
 
-                    final Post finalPost = post;
-                    FirebaseSingleton.getInstance().databaseReference
-                            .child("users")
-                            .child(post.getUserId())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Pawer user = dataSnapshot.getValue(Pawer.class);
-                            Post inerPost = finalPost;
+                    if (enterToFeed(post)) {
 
-                            int avatar = SwitchAvatar(user.getAvatar());
+                        final Post finalPost = post;
+                        FirebaseSingleton.getInstance().databaseReference
+                                .child("users")
+                                .child(post.getUserId())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Pawer user = dataSnapshot.getValue(Pawer.class);
+                                        Post inerPost = finalPost;
 
-                            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.valueOf(inerPost.getTime()));
+                                        int avatar = SwitchAvatar(user.getAvatar());
 
-                            FeedTypeEnum feedType = SwitchType(inerPost.getType());
+                                        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.valueOf(inerPost.getTime()));
 
-                            Boolean favourite = false;
+                                        FeedTypeEnum feedType = SwitchType(inerPost.getType());
 
-                            if (Pawer.getInstance().getFavourites() != null) {
-                                favourite = Pawer.getInstance().getFavourites().contains(inerPost.getId());
-                            }
+                                        Boolean favourite = false;
 
-                            // TODO: da se refaktorise, post slika da se ubaci
-                            feedList.add(new FeedItem(inerPost.getId(), user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, favourite));
-                            adapter.notifyDataSetChanged();
-                        }
+                                        if (Pawer.getInstance().getFavourites() != null) {
+                                            favourite = Pawer.getInstance().getFavourites().contains(inerPost.getId());
+                                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                                        // TODO: da se refaktorise, post slika da se ubaci
+                                        feedList.add(new FeedItem(inerPost.getId(), user.getName(), avatar, timeAgo.toString(), inerPost.getDescription(), R.drawable.picture3, feedType, favourite));
+                                        adapter.notifyDataSetChanged();
+                                    }
 
-                        }
-                    });
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
                 }
             }
 
@@ -188,7 +223,7 @@ public class FeedFragment extends Fragment {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                            final Post post = dataSnapshot.getValue(Post.class);
+                                        final Post post = dataSnapshot.getValue(Post.class);
 
                                             FirebaseSingleton.getInstance().databaseReference
                                                     .child("users")
@@ -196,8 +231,9 @@ public class FeedFragment extends Fragment {
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Pawer user = dataSnapshot.getValue(Pawer.class);
+
                                                             Post inerPost = post;
+                                                            Pawer user = dataSnapshot.getValue(Pawer.class);
 
                                                             int avatar = SwitchAvatar(user.getAvatar());
 
@@ -215,7 +251,7 @@ public class FeedFragment extends Fragment {
 
                                                         }
                                                     });
-                                        }
+                                            }
 
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
@@ -230,6 +266,22 @@ public class FeedFragment extends Fragment {
 
                     }
                 });
+    }
+
+    private boolean enterToFeed(Post post) {
+
+        Boolean type, size, color;
+
+        type = Pawer.getInstance().getFilter().getType().equals("All") ||
+                (post.getAnimalType() != null && Pawer.getInstance().getFilter().getType().equals(post.getAnimalType()));
+
+        size = Pawer.getInstance().getFilter().getSize().equals("All") ||
+                (post.getAnimalSize() != null && Pawer.getInstance().getFilter().getSize().equals(post.getAnimalSize()));
+
+        color = Pawer.getInstance().getFilter().getColor().equals("All") ||
+                (post.getAnimalColor() != null && Pawer.getInstance().getFilter().getColor().equals(post.getAnimalColor()));
+
+        return type && size && color;
     }
 
     private FeedTypeEnum SwitchType(String type) {
@@ -295,5 +347,13 @@ public class FeedFragment extends Fragment {
                 getContext().startActivity(i);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        initFiltersButton();
+        initFeedFromDatabase();
     }
 }
