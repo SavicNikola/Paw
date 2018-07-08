@@ -45,6 +45,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.0'
 
+    //Geofire
+    implementation 'com.firebase:geofire-android:2.1.2'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
