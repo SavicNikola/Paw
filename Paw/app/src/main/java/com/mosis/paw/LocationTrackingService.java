@@ -123,6 +123,7 @@ public class LocationTrackingService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, RC_NOTIFICATION,
                 new Intent(this, MapActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("TYPE", "users")
                         .putExtra("longitude", location.longitude)
                         .putExtra("latitude", location.latitude),
                 PendingIntent.FLAG_UPDATE_CURRENT);

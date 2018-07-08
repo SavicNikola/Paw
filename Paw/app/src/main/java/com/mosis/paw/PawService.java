@@ -82,7 +82,7 @@ public class PawService extends Service {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 PawNotification notification = dataSnapshot.getValue(PawNotification.class);
-                                if (notification!=null && !notification.isRead()) {
+                                if (notification!=null && !notification.getRead()) {
                                     displayNotification(notification);
                                 }
                             }

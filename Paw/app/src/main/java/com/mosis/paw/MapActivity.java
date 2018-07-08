@@ -50,6 +50,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     EditToolbar("Friends on map");
                     initFriendsMarkers();
                     break;
+                case "users":
+                    EditToolbar("Users on map");
+                    initUsersMarkers();
+                    break;
                 case "post":
                     EditToolbar("Post on map");
                     String postId = extras.getString("POSTID", null);
