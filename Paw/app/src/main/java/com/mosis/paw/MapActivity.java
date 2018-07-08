@@ -6,11 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,13 +17,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -139,16 +136,54 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Pawer friend = dataSnapshot.getValue(Pawer.class);
-
+                                            final Pawer friend = dataSnapshot.getValue(Pawer.class);
 
                                             if (friend.getLatitude() != null && friend.getLongitude() != null) {
-                                                MarkerOptions marker = new MarkerOptions()
-                                                        .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())))
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar1));
+                                                FirebaseSingleton.getInstance().storageReference
+                                                        .child("profile_images")
+                                                        .child(friend.getEscapedEmail())
+                                                        .getDownloadUrl()
+                                                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                            @Override
+                                                            public void onSuccess(Uri uri) {
+                                                                Glide.with(MapActivity.this)
+                                                                        .asBitmap()
+                                                                        .load(uri)
+                                                                        .apply(RequestOptions.circleCropTransform())
+                                                                        .into(new SimpleTarget<Bitmap>() {
+                                                                            @Override
+                                                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                                                MarkerOptions markerOptions = new MarkerOptions()
+                                                                                        .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
+                                                                                        .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
 
-                                                markersList.add(marker);
-                                                showMarkers();
+                                                                                markersList.add(markerOptions);
+                                                                                showMarkers();
+                                                                            }
+                                                                        });
+                                                            }
+
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Glide.with(MapActivity.this)
+                                                                        .asBitmap()
+                                                                        .load(R.drawable.no_image_available)
+                                                                        .apply(RequestOptions.circleCropTransform())
+                                                                        .into(new SimpleTarget<Bitmap>() {
+                                                                            @Override
+                                                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                                                MarkerOptions markerOptions = new MarkerOptions()
+                                                                                        .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
+                                                                                        .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
+
+                                                                                markersList.add(markerOptions);
+                                                                                showMarkers();
+                                                                            }
+                                                                        });
+                                                            }
+                                                        });
                                             }
                                         }
 
@@ -342,13 +377,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         initPostsMarkers();
     }
 
-    private Bitmap makeStackedBitmap(final Bitmap foreground)
-    {
+    private Bitmap makeStackedBitmap(final Bitmap foreground) {
         Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.map_marker);
         Bitmap result = Bitmap.createBitmap(background.getWidth(), background.getHeight(), background.getConfig());   //Initialize the result image
         Canvas canvas = new Canvas(result);   //Create a canvas so we can draw onto the result image
         canvas.drawBitmap(background, 0, 0, null);   //Draw the background
         canvas.drawBitmap(foreground, 230, 35, null);   //Draw the foreground. Change (0, 0) if you want.
-        return result.createScaledBitmap(result,160, 160, false);   //Returns single image with the background and foreground
+        return result.createScaledBitmap(result, 160, 160, false);   //Returns single image with the background and foreground
     }
 }
