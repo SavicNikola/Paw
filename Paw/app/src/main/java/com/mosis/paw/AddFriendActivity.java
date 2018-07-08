@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class AddFriendActivity extends AppCompatActivity implements BluetoothListAdapter.BluetoothAdapterListener {
@@ -39,6 +41,10 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
 
     Button bluetoothSearch;
     RecyclerView btRecyclerView;
+
+    List<BluetoothDevice> paired;
+
+    ClientClass clientClass;
 
     Boolean stateChangeReceiverRegistered = false;
     Boolean stateSearchRegistered = false;
@@ -57,12 +63,16 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
         initRecycleView();
 
         initBluetooth();
+        initBond();
         initBluetoothSearch();
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        paired = new ArrayList<BluetoothDevice>();
+        paired.addAll(pairedDevices);
+
         //??
         ServerClass serverClass = new ServerClass();
         serverClass.start();
-
-        initBond();
     }
 
     private void initRecycleView() {
@@ -192,14 +202,18 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    Toast.makeText(context, "Povezan", Toast.LENGTH_SHORT).show();
-
-                    ClientClass clientClass = new ClientClass(device);
-                    clientClass.start();
+                    startClientOnDevice(device);
                 }
             }
         }
     };
+
+    private void startClientOnDevice(BluetoothDevice device) {
+        Toast.makeText(this, "Connect with " + device.getName(), Toast.LENGTH_SHORT).show();
+
+        clientClass = new ClientClass(device);
+        clientClass.start();
+    }
 
     private void EditToolbar() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
@@ -238,8 +252,11 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
 
         mBluetoothAdapter.cancelDiscovery();
 
-        // pair
-        item.createBond();
+        if (paired.contains(item))
+            startClientOnDevice(item);
+        else
+            // pair
+            item.createBond();
     }
 
     SendReceive sendReceive;
@@ -247,7 +264,9 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
     @Override
     public void onItemLongSelected(BluetoothDevice item) {
         String poruka = "Cao cao";
-        sendReceive.write(poruka.getBytes());
+
+        if (sendReceive != null)
+            sendReceive.write(poruka.getBytes());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,7 +350,7 @@ public class AddFriendActivity extends AppCompatActivity implements BluetoothLis
 
     private class ClientClass extends Thread {
         private BluetoothSocket socket;
-        private BluetoothDevice device;
+        public BluetoothDevice device;
 
         public ClientClass(BluetoothDevice device) {
             this.device = device;

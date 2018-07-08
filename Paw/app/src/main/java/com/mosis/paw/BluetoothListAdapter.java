@@ -41,7 +41,7 @@ public class BluetoothListAdapter extends RecyclerView.Adapter<BluetoothListAdap
                 @Override
                 public boolean onLongClick(View v) {
                     listener.onItemLongSelected(bluetoothList.get(getAdapterPosition()));
-                    return false;
+                    return true;
                 }
             });
         }
