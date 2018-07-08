@@ -1,16 +1,22 @@
 package com.mosis.paw;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         EditToolbar();
 
         getViews();
+        initProfileBtn();
 
         InitRecycleView();
 
@@ -79,6 +86,98 @@ public class ProfileActivity extends AppCompatActivity {
                         Glide.with(ProfileActivity.this).load(uri).into(profileImage);
                     }
                 });
+    }
+
+    private void initProfileBtn() {
+        if (userId.equals(Pawer.getInstance().getEmail())) {
+            profileBtn.setText("Edit");
+            profileBtn.setVisibility(View.VISIBLE);
+
+            profileBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            FirebaseSingleton.getInstance().databaseReference
+                    .child("friends")
+                    .child(Pawer.getInstance().getEmail())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            final ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
+
+                            if (list != null && list.contains(userId)) {
+                                profileBtn.setText("Remove");
+                                profileBtn.setVisibility(View.VISIBLE);
+
+                                profileBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+
+                                        builder.setTitle("Delete friend?")
+                                                .setMessage("Do you want to delete your friendship with " + userId + "?")
+                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        list.remove(userId);
+
+                                                        FirebaseSingleton.getInstance().databaseReference
+                                                                .child("friends")
+                                                                .child(Pawer.getInstance().getEmail())
+                                                                .setValue(list);
+
+                                                        FirebaseSingleton.getInstance().databaseReference
+                                                                .child("friends")
+                                                                .child(userId)
+                                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                        ArrayList<String> list2 = (ArrayList) dataSnapshot.getValue();
+
+                                                                        if (list2 != null && list2.contains(Pawer.getInstance().getEmail())) {
+                                                                            list2.remove(Pawer.getInstance().getEmail());
+
+                                                                            FirebaseSingleton.getInstance().databaseReference
+                                                                                    .child("friends")
+                                                                                    .child(userId)
+                                                                                    .setValue(list2);
+                                                                        }
+
+                                                                        Toast.makeText(ProfileActivity.this, ":(", Toast.LENGTH_SHORT).show();
+                                                                        onBackPressed();
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                    }
+                                                                });
+                                                    }
+                                                })
+                                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Toast.makeText(ProfileActivity.this, "Good :)", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .setIcon(R.drawable.ic_face_sad)
+                                                .show();
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        }
     }
 
     private void InitRecycleView() {

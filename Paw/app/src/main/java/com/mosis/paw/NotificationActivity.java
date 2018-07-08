@@ -63,7 +63,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
                             FirebaseSingleton.getInstance().databaseReference
                                     .child("notification_data")
                                     .child(notificationID)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             PawNotification notification = dataSnapshot.getValue(PawNotification.class);

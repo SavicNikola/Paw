@@ -68,7 +68,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
                             FirebaseSingleton.getInstance().databaseReference
                                     .child("users")
                                     .child(friendEmail)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Friend friend = dataSnapshot.getValue(Friend.class);
@@ -92,24 +92,6 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
                     }
                 });
-    }
-
-    void DummyItems() {
-        Friend f = new Friend("Marko Markovic", R.drawable.avatar1, "Nis, Serbia", "asd");
-        Friend f1 = new Friend("Nikola Nikolic", R.drawable.avatar2, "Belgrade, Serbia", "asd");
-        Friend f2 = new Friend("Marko Stefanovic", R.drawable.avatar3, "Novi Sad, Serbia", "asd");
-
-        friendsList.add(f);
-        friendsList.add(f1);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
-        friendsList.add(f2);
     }
 
     //TODO: da se refaktorise
@@ -182,7 +164,11 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
     @Override
     public void onFriendSelected(Friend friend) {
-        Toast.makeText(getApplicationContext(), "Selected:" + friend.getName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Selected:" + friend.getName(), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("UserID", friend.getEmail());
+        startActivity(intent);
     }
 
     void initShowUsersOnMapButton() {
