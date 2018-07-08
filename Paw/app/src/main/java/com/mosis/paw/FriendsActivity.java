@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import android.widget.Toast;
 
@@ -192,7 +191,9 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapFriendsActivity.class);
+                Intent intent = new Intent(v.getContext(), MapActivity.class);
+                //type of map (friends, post, feed)
+                intent.putExtra("TYPE", "friends");
                 v.getContext().startActivity(intent);
             }
         });

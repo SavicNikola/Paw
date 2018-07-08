@@ -9,8 +9,9 @@ public class PawNotification {
     private String picture;
     private String description;
     private String type;
-    private boolean read;
-
+    private String time;
+    private String number;
+    private Boolean read;
 
     public static final String FOUND = "found";
     public static final String ADOPT = "adopt";
@@ -19,7 +20,7 @@ public class PawNotification {
 
     }
 
-    public PawNotification(String id, String latitude, String longitude, String user, String picture, String description, String type) {
+    public PawNotification(String id, String latitude, String longitude, String user, String picture, String description, String type, String time, String number, Boolean read) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -27,7 +28,9 @@ public class PawNotification {
         this.picture = picture;
         this.description = description;
         this.type = type;
-        read = false;
+        this.time = time;
+        this.number = number;
+        this.read = read;
     }
 
     public String getId() {
@@ -86,11 +89,27 @@ public class PawNotification {
         this.type = type;
     }
 
-    public boolean isRead() {
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public Boolean getRead() {
         return read;
     }
 
-    public void setRead(boolean read) {
+    public void setRead(Boolean read) {
         this.read = read;
     }
 }

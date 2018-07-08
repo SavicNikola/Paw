@@ -4,6 +4,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.mosis.paw.Model.Filter;
 import com.mosis.paw.Model.User;
 
 import java.util.ArrayList;
@@ -17,27 +18,7 @@ public class Pawer extends User {
     //private static final Pawer instance = null;
 
     private Pawer() {
-        //favourites;
-
-//        // TODO: proba podaci obrisati posle
-//        setEmail("gogidotcom");
-//
-//        // povucemo svoji favourites
-//        FirebaseSingleton.getInstance().databaseReference
-//                .child("users")
-//                .child(getEmail())
-//                .child("favourites")
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        setFavourites((ArrayList<String>) dataSnapshot.getValue());
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
+        filter = new Filter("All", "All", "All");
     }
 
     public static Pawer getInstance() {
@@ -55,6 +36,8 @@ public class Pawer extends User {
     private String longitude;
 
     private ArrayList<String> favourites;
+
+    private Filter filter;
 
     public Pawer(User user) {
         key = user.getKey();
@@ -133,5 +116,13 @@ public class Pawer extends User {
 
     public String getEscapedEmail() {
         return FirebaseSingleton.escapeSpecialCharacters(email);
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 }

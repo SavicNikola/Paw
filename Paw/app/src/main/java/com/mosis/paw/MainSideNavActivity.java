@@ -31,6 +31,8 @@ public class MainSideNavActivity extends AppCompatActivity
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    Bundle bundle = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +116,6 @@ public class MainSideNavActivity extends AppCompatActivity
     private void ChangeFragment(final int selectedId) {
 
         Fragment frag = null;
-        Bundle bundle = null;
         Intent intent = null;
 
         switch (selectedId) {
@@ -146,8 +147,26 @@ public class MainSideNavActivity extends AppCompatActivity
                 frag.setArguments(bundle);
                 break;
 
+            case R.id.action_feed_map:
+                intent = new Intent(this, MapActivity.class);
+                //type of map (friends, post, feed)
+                intent.putExtra("TYPE", "feed");
+                intent.putExtra("FEED", bundle.getString("feed"));
+                this.startActivity(intent);
+                break;
+
+            case R.id.nav_statistics:
+                intent = new Intent(this, StatisticsActivity.class);
+                this.startActivity(intent);
+                break;
+
             case R.id.nav_friends:
                 intent = new Intent(this, FriendsActivity.class);
+                this.startActivity(intent);
+                break;
+
+            case R.id.nav_notification:
+                intent = new Intent(this, NotificationActivity.class);
                 this.startActivity(intent);
                 break;
 
