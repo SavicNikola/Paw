@@ -1,5 +1,6 @@
 package com.mosis.paw;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private List<LatLng> markersList;
 
-    private String typeOfMap;
+    private String typeOfMap, typeOfFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         Bundle extras = getIntent().getExtras();
         typeOfMap = extras == null ? null : extras.getString("TYPE", null);
+        typeOfFeed = extras == null ? null : extras.getString("FEED", null);
 
         if (typeOfMap != null)
             switch (typeOfMap) {
@@ -90,6 +92,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             case R.id.map_all_users:
                 getSupportActionBar().setTitle("Users on map");
                 initUsersMarkers();
+                break;
+            case R.id.map_filters:
+                Intent intent = new Intent(this, FiltersActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -188,7 +194,50 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     void initPostsMarkers() {
+        FirebaseSingleton.getInstance().databaseReference
+                .child("posts")
+                .orderByChild("type")
+                .equalTo(typeOfFeed) // filter po feed
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        Post post;
+                        markersList.clear();
+
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
+                            post = postSnapshot.getValue(Post.class);
+
+                            if (enterToFeed(post))
+                                if (post.getMapLatitude() != null && post.getMapLongitude() != null)
+                                    markersList.add(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude())));
+                        }
+
+                        showMarkers();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private boolean enterToFeed(Post post) {
+
+        Boolean type, size, color;
+
+        type = Pawer.getInstance().getFilter().getType().equals("All") ||
+                (post.getAnimalType() != null && Pawer.getInstance().getFilter().getType().equals(post.getAnimalType()));
+
+        size = Pawer.getInstance().getFilter().getSize().equals("All") ||
+                (post.getAnimalSize() != null && Pawer.getInstance().getFilter().getSize().equals(post.getAnimalSize()));
+
+        color = Pawer.getInstance().getFilter().getColor().equals("All") ||
+                (post.getAnimalColor() != null && Pawer.getInstance().getFilter().getColor().equals(post.getAnimalColor()));
+
+        return type && size && color;
     }
 
     void showMarkers() {
@@ -203,9 +252,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (typeOfMap.equals("friends"))
-            getMenuInflater().inflate(R.menu.users_map_menu, menu);
+        switch (typeOfMap) {
+            case "friends":
+                getMenuInflater().inflate(R.menu.users_map_menu, menu);
+                break;
+
+            case "feed":
+                getMenuInflater().inflate(R.menu.feed_map_menu, menu);
+                break;
+        }
 
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initPostsMarkers();
     }
 }
