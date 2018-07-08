@@ -54,6 +54,8 @@ public class PostInformationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), FoundActivity.class);
+                intent.putExtra("TYPE", post.getType());
+                intent.putExtra("PostUserId", post.getUserId());
                 v.getContext().startActivity(intent);
             }
         });

@@ -74,6 +74,7 @@
                 android:textColor="@color/colorAccent" />
 
             <EditText
+                android:id="@+id/found_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/blue_box_background"
