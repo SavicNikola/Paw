@@ -159,8 +159,18 @@ public class MainSideNavActivity extends AppCompatActivity
                 frag.setArguments(bundle);
                 break;
 
+            case R.id.nav_statistics:
+                intent = new Intent(this, StatisticsActivity.class);
+                this.startActivity(intent);
+                break;
+
             case R.id.nav_friends:
                 intent = new Intent(this, FriendsActivity.class);
+                this.startActivity(intent);
+                break;
+
+            case R.id.nav_notification:
+                intent = new Intent(this, NotificationActivity.class);
                 this.startActivity(intent);
                 break;
 
