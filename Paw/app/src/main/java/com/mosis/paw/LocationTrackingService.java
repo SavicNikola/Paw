@@ -1,5 +1,6 @@
 package com.mosis.paw;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ public class LocationTrackingService extends Service {
     private static final int NOTIF_TYPE_PAWER_NERBY = 1;
     private static final String NOTIF_CHANNEL_ID = "channel_id";
     private static final int NOTIFICATION_ID = 5;
+    private static final int RC_NOTIFICATION = 3;
 
     private FusedLocationProviderClient client;
     private LocationCallback locationCallback;
@@ -93,9 +95,9 @@ public class LocationTrackingService extends Service {
             geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
-                    if (key.equals(Pawer.getInstance().getEscapedEmail())) {
-                        displayNotification(NOTIF_TYPE_PAWER_NERBY);
-                    }
+                    if (key.equals(Pawer.getInstance().getEscapedEmail())) {        //bug je bio sto se na pocetku uvek poziva za sve usere enter
+                        displayNotification(location, NOTIF_TYPE_PAWER_NERBY);                //key je onaj koji ulazi u oblast
+                    }                                                               //znaci, nama treba key trenutnog user-a.
                 }
 
                 @Override
@@ -117,11 +119,21 @@ public class LocationTrackingService extends Service {
         }
     }
 
-    private void displayNotification(int notificaitonType) {
+    private void displayNotification(GeoLocation location, int notificaitonType) {
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, RC_NOTIFICATION,
+                new Intent(this, MapFriendsActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("longitude", location.longitude)
+                        .putExtra("latitude", location.latitude),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_paw_accent)
-                .setSound(sound);
+                .setSound(sound)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
         if (notificaitonType == NOTIF_TYPE_PAWER_NERBY) {
             builder.setContentTitle("Ljubitelj zivotinja u blizini!")
                     .setContentText("Klikni ovde da saznas vise.");

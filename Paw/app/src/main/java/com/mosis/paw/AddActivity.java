@@ -59,6 +59,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
 
     private String typeOfPost;
     private int numOfSelectedImages;
+    private File photoFile;
 
     GoogleMap mMap;
     Marker mMarker;
@@ -91,7 +92,9 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CAMERA) {
-            addImageUri(capturedImageUri);
+            if (photoFile.length() != 0) {
+                addImageUri(capturedImageUri);
+            }
         } else if (requestCode == RC_GALLERY) {
             if (data != null) {
                 if (data.getClipData() != null) {
@@ -162,7 +165,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;
+                    photoFile = null;
                     try {
                         photoFile = createImageFile();
                     } catch (IOException e) {
