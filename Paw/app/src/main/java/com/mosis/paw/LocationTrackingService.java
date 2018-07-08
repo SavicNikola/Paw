@@ -121,7 +121,7 @@ public class LocationTrackingService extends Service {
 
     private void displayNotification(GeoLocation location, int notificaitonType) {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, RC_NOTIFICATION,
-                new Intent(this, MapFriendsActivity.class)
+                new Intent(this, MapActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtra("longitude", location.longitude)
                         .putExtra("latitude", location.latitude),
