@@ -6,10 +6,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary">
 
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:id="@+id/feed_filters_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/blue_pill_background_fill"
+        android:paddingLeft="10dp"
+        android:paddingRight="15dp"
+        android:drawablePadding="5dp"
+        android:text="Filters:      ALL"
+        android:drawableLeft="@drawable/ic_filters"
+        android:drawableStart="@drawable/ic_filters"
+        android:textSize="12dp"/>
+
+    <View
+        android:id="@+id/feed_separator"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/feed_filters_btn"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@android:color/darker_gray"/>
+
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/feed_separator"
         android:id="@+id/feed_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="110dp"
