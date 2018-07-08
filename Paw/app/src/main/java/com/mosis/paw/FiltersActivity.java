@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.mosis.paw.Model.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +22,10 @@ public class FiltersActivity extends AppCompatActivity {
     private Spinner sizeSpinner;
     private Spinner colorSpinner;
 
-    private List<String> spinnerList;
+    private List<String> locationList, typeList, sizeList, colorList;
     private ArrayAdapter<String> spinnerAdapter;
+
+    private Button setFilters, resetFilters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +37,18 @@ public class FiltersActivity extends AppCompatActivity {
         ColorSpinnerInit();
         SizeSpinnerInit();
 
+        initButtons();
+
         EditToolbar();
     }
 
     private void LocationSpinnerInit() {
         locationSpinner = findViewById(R.id.location_spinner);
 
-        spinnerList = new ArrayList<String>();
-        spinnerList.add("Nis, Serbia");
+        locationList = new ArrayList<String>();
+        locationList.add("Nis, Serbia");
 
-        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, locationList);
 
         locationSpinner.setAdapter(spinnerAdapter);
     }
@@ -48,45 +56,51 @@ public class FiltersActivity extends AppCompatActivity {
     private void TypeSpinnerInit() {
         typeSpinner = findViewById(R.id.type_spinner);
 
-        spinnerList = new ArrayList<String>();
-        spinnerList.add("All");
-        spinnerList.add("Dog");
-        spinnerList.add("Cat");
-        spinnerList.add("Tiger");
+        typeList = new ArrayList<String>();
+        typeList.add("All");
+        typeList.add("Dog");
+        typeList.add("Cat");
+        typeList.add("Tiger");
 
-        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, typeList);
 
         typeSpinner.setAdapter(spinnerAdapter);
+
+        typeSpinner.setSelection(typeList.indexOf(Pawer.getInstance().getFilter().getType()));
     }
 
     private void ColorSpinnerInit() {
         colorSpinner = findViewById(R.id.color_spinner);
 
-        spinnerList = new ArrayList<String>();
-        spinnerList.add("All");
-        spinnerList.add("White");
-        spinnerList.add("Blue");
-        spinnerList.add("Black");
-        spinnerList.add("Yellow");
-        spinnerList.add("Brown");
+        colorList = new ArrayList<String>();
+        colorList.add("All");
+        colorList.add("White");
+        colorList.add("Blue");
+        colorList.add("Black");
+        colorList.add("Yellow");
+        colorList.add("Brown");
 
-        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, colorList);
 
         colorSpinner.setAdapter(spinnerAdapter);
+
+        colorSpinner.setSelection(colorList.indexOf(Pawer.getInstance().getFilter().getColor()));
     }
 
     private void SizeSpinnerInit() {
         sizeSpinner = findViewById(R.id.size_spinner);
 
-        spinnerList = new ArrayList<String>();
-        spinnerList.add("All");
-        spinnerList.add("Small");
-        spinnerList.add("Normal");
-        spinnerList.add("Big");
+        sizeList = new ArrayList<String>();
+        sizeList.add("All");
+        sizeList.add("Small");
+        sizeList.add("Normal");
+        sizeList.add("Big");
 
-        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, sizeList);
 
         sizeSpinner.setAdapter(spinnerAdapter);
+
+        sizeSpinner.setSelection(sizeList.indexOf(Pawer.getInstance().getFilter().getSize()));
     }
 
     public void ShowLocationSpinner(View v) {
@@ -103,6 +117,36 @@ public class FiltersActivity extends AppCompatActivity {
 
     public void ShowSizeSpinner(View v) {
         sizeSpinner.performClick();
+    }
+
+    private void initButtons() {
+
+        setFilters = findViewById(R.id.btnSetFilters);
+        resetFilters = findViewById(R.id.btnResetFilters);
+
+        setFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Pawer.getInstance().setFilter(new Filter(
+                        typeList.get(typeSpinner.getSelectedItemPosition()),
+                        colorList.get(colorSpinner.getSelectedItemPosition()),
+                        sizeList.get(sizeSpinner.getSelectedItemPosition())
+                ));
+
+                Toast.makeText(v.getContext(), "Filters are set!", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        });
+
+        resetFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Pawer.getInstance().setFilter(new Filter("All", "All", "All"));
+
+                Toast.makeText(v.getContext(), "Filters are reset!", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        });
     }
 
     private void EditToolbar() {
