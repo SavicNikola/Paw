@@ -31,7 +31,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_users_map">Map</string>
 
-    <string name="file_provider_authority"
-        translatable="false">com.mosis.paw.fileprovider
+    <string name="file_provider_authority" translatable="false">com.mosis.paw.fileprovider
     </string>
 </resources>
