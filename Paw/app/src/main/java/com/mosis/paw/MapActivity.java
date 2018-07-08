@@ -11,7 +11,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +27,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    private List<LatLng> markersList;
+    private List<MarkerOptions> markersList;
 
     private String typeOfMap, typeOfFeed;
 
@@ -38,7 +40,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.friends_map_fragment);
         mapFragment.getMapAsync(this);
 
-        markersList = new ArrayList<LatLng>();
+        markersList = new ArrayList<MarkerOptions>();
 
         Bundle extras = getIntent().getExtras();
         typeOfMap = extras == null ? null : extras.getString("TYPE", null);
@@ -126,8 +128,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Pawer friend = dataSnapshot.getValue(Pawer.class);
 
+
+
                                             if (friend.getLatitude() != null && friend.getLongitude() != null) {
-                                                markersList.add(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
+                                                MarkerOptions marker = new MarkerOptions()
+                                                        .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())))
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avatar1));
+
+                                                markersList.add(marker);
                                                 showMarkers();
                                             }
                                         }
@@ -138,6 +146,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                         }
                                     });
                         }
+
                     }
 
                     @Override
@@ -160,7 +169,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             Pawer user = userSnapshot.getValue(Pawer.class);
 
                             if (user.getLatitude() != null && user.getLongitude() != null) {
-                                markersList.add(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude())));
+                                markersList.add(new MarkerOptions()
+                                        .position(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude()))));
                                 showMarkers();
                             }
                         }
@@ -185,7 +195,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         markersList.clear();
 
                         if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
-                            markersList.add(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude())));
+                            markersList.add(new MarkerOptions()
+                                    .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
                             showMarkers();
                         }
                     }
@@ -215,7 +226,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                             if (enterToFeed(post))
                                 if (post.getMapLatitude() != null && post.getMapLongitude() != null)
-                                    markersList.add(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude())));
+                                    markersList.add(new MarkerOptions()
+                                            .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
                         }
 
                         showMarkers();
@@ -248,8 +260,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mMap.clear();
 
-        for (LatLng marker : markersList) {
-            mMap.addMarker(new MarkerOptions().position(marker));
+        for (MarkerOptions marker : markersList) {
+            mMap.addMarker(marker);
         }
     }
 
