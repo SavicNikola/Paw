@@ -161,7 +161,7 @@ public class LocationTrackingService extends Service {
             public void onLocationResult(final LocationResult locationResult) {
 
                 Pawer.getInstance().setLatitude(String.valueOf(locationResult.getLastLocation().getLatitude()));
-                Pawer.getInstance().setLatitude(String.valueOf(locationResult.getLastLocation().getLongitude()));
+                Pawer.getInstance().setLongitude(String.valueOf(locationResult.getLastLocation().getLongitude()));
 
                 FirebaseSingleton.getInstance().databaseReference
                         .child("users")

@@ -257,7 +257,12 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         StorageReference ref = FirebaseSingleton.getInstance().storageReference.child(post.getId());
         for (int i = 0; i < imageUris.size(); i++) {
             if (imageUris.get(i) != null)
-                ref.child("img"+i).putFile(imageUris.get(i));
+                ref.child("img"+i).putFile(imageUris.get(i)).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
         }
     }
 

@@ -332,37 +332,59 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     void initPostsMarkers() {
-        FirebaseSingleton.getInstance().databaseReference
-                .child("posts")
-                .orderByChild("type")
-                .equalTo(typeOfFeed) // filter po feed
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        Post post;
-                        markersList.clear();
+//        FirebaseSingleton.getInstance().databaseReference
+//                .child("users")
+//                .child(Pawer.getInstance().getEmail())
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//
+                        FirebaseSingleton.getInstance().databaseReference
+                                .child("posts")
+                                .orderByChild("type")
+                                .equalTo(typeOfFeed) // filter po feed
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                        Post post;
+                                        markersList.clear();
 
-                            post = postSnapshot.getValue(Post.class);
+                                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
-                            if (enterToFeed(post))
-                                if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
-                                    markersList.add(new MarkerOptions()
-                                            .title("post")
-                                            .snippet(post.getId())
-                                            .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
-                                    showMarkers();
-                                }
-                        }
-                    }
+                                            post = postSnapshot.getValue(Post.class);
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                                            if (enterToFeed(post)) {
+                                                if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
+                                                    markersList.add(new MarkerOptions()
+                                                            .title("post")
+                                                            .snippet(post.getId())
+                                                            .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
+                                                    showMarkers();
+                                                }
+                                            }
 
-                    }
-                });
+                                            if (markersList.size() == 0) {
+                                                showMarkers();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+
+
     }
 
     private boolean enterToFeed(Post post) {

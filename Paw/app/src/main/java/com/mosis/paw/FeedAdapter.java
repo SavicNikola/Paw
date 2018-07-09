@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -82,17 +84,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.MyViewHolder> 
         holder.postDesc.setText(post.getPostDesc());
 
         // load picture
-        storage.child(post.getPostId() + "/img0").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(mContext).load(uri).into(holder.postPicture);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Glide.with(mContext).load(R.drawable.no_image_available).into(holder.postPicture);
-            }
-        });
+        try {
+            storage.child(post.getPostId() + "/img0").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(mContext).load(uri).into(holder.postPicture);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Glide.with(mContext).load(R.drawable.no_image_available).into(holder.postPicture);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("STORAGE ERROR UHVACEN", "onBindViewHolder: " );
+        }
 
         if (post.getFavoruite())
             holder.favouriteButton.setImageResource(R.drawable.ic_post_favourite_fill);
