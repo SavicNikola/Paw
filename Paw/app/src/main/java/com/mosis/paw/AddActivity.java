@@ -199,7 +199,6 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), Pawer.getInstance().getEmail(), Toast.LENGTH_SHORT).show();
                 String desc = descText.getText().toString();
                 String color = colorSpinner.getSelectedItem().toString();
                 String size = sizeSpinner.getSelectedItem().toString();
@@ -243,6 +242,7 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(AddActivity.this, "Posted successfully!", Toast.LENGTH_LONG).show();
+                        onBackPressed();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

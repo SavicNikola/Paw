@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -451,6 +452,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Canvas canvas = new Canvas(result);   //Create a canvas so we can draw onto the result image
         canvas.drawBitmap(background, 0, 0, null);   //Draw the background
         canvas.drawBitmap(foreground, 230, 35, null);   //Draw the foreground. Change (0, 0) if you want.
-        return result.createScaledBitmap(result, 160, 160, false);   //Returns single image with the background and foreground
+        return result.createScaledBitmap(result, returnPixels(50), returnPixels(50), false);   //Returns single image with the background and foreground
+    }
+
+    private int returnPixels(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 }

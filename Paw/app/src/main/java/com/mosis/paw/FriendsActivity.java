@@ -68,7 +68,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
                             FirebaseSingleton.getInstance().databaseReference
                                     .child("users")
                                     .child(friendEmail)
-                                    .addValueEventListener(new ValueEventListener() {
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Friend friend = dataSnapshot.getValue(Friend.class);
