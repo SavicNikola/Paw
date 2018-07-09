@@ -47,7 +47,6 @@ dependencies {
 
     //Geofire
     implementation 'com.firebase:geofire-android:2.1.2'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

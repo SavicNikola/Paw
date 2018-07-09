@@ -5,10 +5,14 @@ public class Filter {
     private String color;
     private String size;
 
-    public Filter(String type, String color, String size) {
+    private String radius;
+
+    public Filter(String type, String color, String size, String radius) {
         this.type = type;
         this.color = color;
         this.size = size;
+
+        this.radius = radius;
     }
 
     public String getType() {
@@ -33,5 +37,13 @@ public class Filter {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public String getRadius() {
+        return radius;
+    }
+
+    public void setRadius(String radius) {
+        this.radius = radius;
     }
 }
