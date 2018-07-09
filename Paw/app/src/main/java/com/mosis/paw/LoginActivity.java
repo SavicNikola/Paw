@@ -102,6 +102,8 @@ public class LoginActivity extends BasicFirebaseOperations {
                             Pawer.getInstance().setPhone(user.getPhone());
                             Pawer.getInstance().setKey(user.getKey());
                             Pawer.getInstance().setPoints(user.getPoints());
+                            Pawer.getInstance().setLatitude(user.getLatitude());
+                            Pawer.getInstance().setLongitude(user.getLongitude());
 
                             startActivity(new Intent(LoginActivity.this, MainSideNavActivity.class));
                         }

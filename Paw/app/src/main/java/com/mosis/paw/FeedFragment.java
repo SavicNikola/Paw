@@ -1,6 +1,7 @@
 package com.mosis.paw;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -87,8 +88,9 @@ public class FeedFragment extends Fragment {
         String text = "FILTERS:     ";
         if (Pawer.getInstance().getFilter().getColor().equals("All") &&
             Pawer.getInstance().getFilter().getSize().equals("All") &&
-            Pawer.getInstance().getFilter().getType().equals("All")) {
-            text += "ALL";
+            Pawer.getInstance().getFilter().getType().equals("All") &&
+            Pawer.getInstance().getFilter().getRadius().equals("All")) {
+                text += "ALL";
         } else {
             if (!Pawer.getInstance().getFilter().getType().equals("All")) {
                 text += Pawer.getInstance().getFilter().getType();
@@ -102,6 +104,11 @@ public class FeedFragment extends Fragment {
 
             if (!Pawer.getInstance().getFilter().getSize().equals("All")) {
                 text += Pawer.getInstance().getFilter().getSize();
+                text += "  |  ";
+            }
+
+            if (!Pawer.getInstance().getFilter().getRadius().equals("All")) {
+                text += Pawer.getInstance().getFilter().getRadius();
                 text += "  |  ";
             }
 
@@ -270,7 +277,15 @@ public class FeedFragment extends Fragment {
 
     private boolean enterToFeed(Post post) {
 
-        Boolean type, size, color;
+        Boolean type, size, color, radius;
+
+        Location postLocation = new Location("");
+        postLocation.setLatitude(Double.valueOf(post.getMapLatitude()));
+        postLocation.setLongitude(Double.valueOf(post.getMapLongitude()));
+
+        Location myLocation = new Location("");
+        myLocation.setLatitude(Double.valueOf(Pawer.getInstance().getLatitude()));
+        myLocation.setLongitude(Double.valueOf(Pawer.getInstance().getLongitude()));
 
         type = Pawer.getInstance().getFilter().getType().equals("All") ||
                 (post.getAnimalType() != null && Pawer.getInstance().getFilter().getType().equals(post.getAnimalType()));
@@ -281,7 +296,9 @@ public class FeedFragment extends Fragment {
         color = Pawer.getInstance().getFilter().getColor().equals("All") ||
                 (post.getAnimalColor() != null && Pawer.getInstance().getFilter().getColor().equals(post.getAnimalColor()));
 
-        return type && size && color;
+        radius = Pawer.getInstance().getFilter().getRadius().equals("All") || (Double.valueOf(Pawer.getInstance().getFilter().getRadius()) > postLocation.distanceTo(myLocation));
+
+        return type && size && color && radius;
     }
 
     private FeedTypeEnum SwitchType(String type) {
@@ -354,6 +371,6 @@ public class FeedFragment extends Fragment {
         super.onResume();
 
         initFiltersButton();
-        initFeedFromDatabase();
+        InitRecycleView();
     }
 }

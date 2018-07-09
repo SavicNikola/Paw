@@ -46,11 +46,20 @@ public class FiltersActivity extends AppCompatActivity {
         locationSpinner = findViewById(R.id.location_spinner);
 
         locationList = new ArrayList<String>();
-        locationList.add("Nis, Serbia");
+        locationList.add("All");
+        locationList.add("50");
+        locationList.add("100");
+        locationList.add("200");
+        locationList.add("500");
+        locationList.add("1000");
+        locationList.add("5000");
+        locationList.add("10000");
 
         spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, locationList);
 
         locationSpinner.setAdapter(spinnerAdapter);
+
+        locationSpinner.setSelection(locationList.indexOf(Pawer.getInstance().getFilter().getRadius()));
     }
 
     private void TypeSpinnerInit() {
@@ -130,7 +139,8 @@ public class FiltersActivity extends AppCompatActivity {
                 Pawer.getInstance().setFilter(new Filter(
                         typeList.get(typeSpinner.getSelectedItemPosition()),
                         colorList.get(colorSpinner.getSelectedItemPosition()),
-                        sizeList.get(sizeSpinner.getSelectedItemPosition())
+                        sizeList.get(sizeSpinner.getSelectedItemPosition()),
+                        locationList.get(locationSpinner.getSelectedItemPosition())
                 ));
 
                 Toast.makeText(v.getContext(), "Filters are set!", Toast.LENGTH_SHORT).show();
@@ -141,7 +151,7 @@ public class FiltersActivity extends AppCompatActivity {
         resetFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Pawer.getInstance().setFilter(new Filter("All", "All", "All"));
+                Pawer.getInstance().setFilter(new Filter("All", "All", "All", "All"));
 
                 Toast.makeText(v.getContext(), "Filters are reset!", Toast.LENGTH_SHORT).show();
                 onBackPressed();

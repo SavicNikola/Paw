@@ -18,7 +18,7 @@ public class Pawer extends User {
     //private static final Pawer instance = null;
 
     private Pawer() {
-        filter = new Filter("All", "All", "All");
+        filter = new Filter("All", "All", "All", "All");
     }
 
     public static Pawer getInstance() {

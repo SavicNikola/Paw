@@ -159,6 +159,10 @@ public class LocationTrackingService extends Service {
         this.locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(final LocationResult locationResult) {
+
+                Pawer.getInstance().setLatitude(String.valueOf(locationResult.getLastLocation().getLatitude()));
+                Pawer.getInstance().setLatitude(String.valueOf(locationResult.getLastLocation().getLongitude()));
+
                 FirebaseSingleton.getInstance().databaseReference
                         .child("users")
                         .child(Pawer.getInstance().getEscapedEmail())

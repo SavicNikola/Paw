@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -314,12 +315,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             post = postSnapshot.getValue(Post.class);
 
                             if (enterToFeed(post))
-                                if (post.getMapLatitude() != null && post.getMapLongitude() != null)
+                                if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
                                     markersList.add(new MarkerOptions()
                                             .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
+                                    showMarkers();
+                                }
                         }
-
-                        showMarkers();
                     }
 
                     @Override
@@ -331,7 +332,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private boolean enterToFeed(Post post) {
 
-        Boolean type, size, color;
+        Boolean type, size, color, radius;
+
+        Location postLocation = new Location("");
+        postLocation.setLatitude(Double.valueOf(post.getMapLatitude()));
+        postLocation.setLongitude(Double.valueOf(post.getMapLongitude()));
+
+        Location myLocation = new Location("");
+        myLocation.setLatitude(Double.valueOf(Pawer.getInstance().getLatitude()));
+        myLocation.setLongitude(Double.valueOf(Pawer.getInstance().getLongitude()));
 
         type = Pawer.getInstance().getFilter().getType().equals("All") ||
                 (post.getAnimalType() != null && Pawer.getInstance().getFilter().getType().equals(post.getAnimalType()));
@@ -342,7 +351,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         color = Pawer.getInstance().getFilter().getColor().equals("All") ||
                 (post.getAnimalColor() != null && Pawer.getInstance().getFilter().getColor().equals(post.getAnimalColor()));
 
-        return type && size && color;
+        radius = Pawer.getInstance().getFilter().getRadius().equals("All") || (Double.valueOf(Pawer.getInstance().getFilter().getRadius()) > postLocation.distanceTo(myLocation));
+
+        return type && size && color && radius;
     }
 
     void showMarkers() {

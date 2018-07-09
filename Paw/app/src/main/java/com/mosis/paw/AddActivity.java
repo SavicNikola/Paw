@@ -280,9 +280,9 @@ public class AddActivity extends BasicFirebaseOperations implements OnMapReadyCa
         mMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151); // TODO: real location
-        mMarker = mMap.addMarker(new MarkerOptions().position(sydney).title("Your location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng myLocation = new LatLng(Double.valueOf(Pawer.getInstance().getLatitude()), Double.valueOf(Pawer.getInstance().getLongitude())); // TODO: real location
+        mMarker = mMap.addMarker(new MarkerOptions().position(myLocation).title("Your location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
