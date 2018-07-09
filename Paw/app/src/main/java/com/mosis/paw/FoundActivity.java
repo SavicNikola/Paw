@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,10 +24,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mosis.paw.Model.PawNotification;
 import com.mosis.paw.Model.Post;
 
@@ -48,6 +53,7 @@ public class FoundActivity extends AppCompatActivity implements OnMapReadyCallba
     Button takePicture, send;
 
     Uri capturedImageUri;
+    File photoFile;
 
     String typeOfPost, postUserId;
 
@@ -65,7 +71,7 @@ public class FoundActivity extends AppCompatActivity implements OnMapReadyCallba
         EditToolbar();
 
         initViews();
-        //initBtnTakePicture();
+        initBtnTakePicture();
         initSendButton();
     }
 
@@ -84,7 +90,6 @@ public class FoundActivity extends AppCompatActivity implements OnMapReadyCallba
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;
                     try {
                         photoFile = createImageFile();
                     } catch (IOException e) {
@@ -144,52 +149,126 @@ public class FoundActivity extends AppCompatActivity implements OnMapReadyCallba
                     notification.setNumber(Pawer.getInstance().getPhone());
 
                 //picture
-                // TODO: SET PICTURE
+                if (photoFile != null && photoFile.length() != 0) {
 
-                //read
-                notification.setRead(false);
+                    Toast.makeText(FoundActivity.this, "Uploading.. Please wait.", Toast.LENGTH_SHORT).show();
 
-                //time
-                notification.setTime(String.valueOf(System.currentTimeMillis()));
+                    FirebaseSingleton.getInstance().storageReference
+                            .child("notification_images")
+                            .child(notification.getId())
+                            .putFile(capturedImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                //type
-                notification.setType(typeOfPost);
+                            FirebaseSingleton.getInstance().storageReference
+                                    .child("notification_images")
+                                    .child(notification.getId())
+                                    .getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            notification.setPicture(uri.toString());
 
-                //user
-                notification.setUser(Pawer.getInstance().getEmail());
+                                            //read
+                                            notification.setRead(false);
 
-                //ADD NOTIFICATION IN NOTIFICATION DATA
-                FirebaseSingleton.getInstance().databaseReference
-                        .child("notification_data")
-                        .child(notification.getId())
-                        .setValue(notification);
+                                            //time
+                                            notification.setTime(String.valueOf(System.currentTimeMillis()));
 
-                //ADD IN NOTIFICATIONS
-                FirebaseSingleton.getInstance().databaseReference
-                        .child("notifications")
-                        .child(postUserId)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                            //type
+                                            notification.setType(typeOfPost);
 
-                                ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
+                                            //user
+                                            notification.setUser(Pawer.getInstance().getEmail());
 
-                                if (list == null)
-                                    list = new ArrayList<>();
+                                            //ADD NOTIFICATION IN NOTIFICATION DATA
+                                            FirebaseSingleton.getInstance().databaseReference
+                                                    .child("notification_data")
+                                                    .child(notification.getId())
+                                                    .setValue(notification);
 
-                                list.add(notification.getId());
+                                            //ADD IN NOTIFICATIONS
+                                            FirebaseSingleton.getInstance().databaseReference
+                                                    .child("notifications")
+                                                    .child(postUserId)
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                FirebaseSingleton.getInstance().databaseReference
-                                        .child("notifications")
-                                        .child(postUserId)
-                                        .setValue(list);
-                            }
+                                                            ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                                            if (list == null)
+                                                                list = new ArrayList<>();
 
-                            }
-                        });
+                                                            list.add(notification.getId());
+
+                                                            FirebaseSingleton.getInstance().databaseReference
+                                                                    .child("notifications")
+                                                                    .child(postUserId)
+                                                                    .setValue(list);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+
+                                            Toast.makeText(FoundActivity.this, "Thank you!", Toast.LENGTH_SHORT).show();
+                                            onBackPressed();
+                                        }
+                                    });
+                        }
+                    });
+                } else {
+                    //read
+                    notification.setRead(false);
+
+                    //time
+                    notification.setTime(String.valueOf(System.currentTimeMillis()));
+
+                    //type
+                    notification.setType(typeOfPost);
+
+                    //user
+                    notification.setUser(Pawer.getInstance().getEmail());
+
+                    //ADD NOTIFICATION IN NOTIFICATION DATA
+                    FirebaseSingleton.getInstance().databaseReference
+                            .child("notification_data")
+                            .child(notification.getId())
+                            .setValue(notification);
+
+                    //ADD IN NOTIFICATIONS
+                    FirebaseSingleton.getInstance().databaseReference
+                            .child("notifications")
+                            .child(postUserId)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
+
+                                    if (list == null)
+                                        list = new ArrayList<>();
+
+                                    list.add(notification.getId());
+
+                                    FirebaseSingleton.getInstance().databaseReference
+                                            .child("notifications")
+                                            .child(postUserId)
+                                            .setValue(list);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                    Toast.makeText(FoundActivity.this, "Thank you!", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
             }
         });
     }

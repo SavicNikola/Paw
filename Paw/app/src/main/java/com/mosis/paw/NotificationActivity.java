@@ -91,7 +91,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     public void onNotificationSelected(PawNotification notification, int position) {
         Intent i = new Intent(this, NotificationInfoActivity.class);
         i.putExtra("NotID", notification.getId());
-        i.putExtra("NotIndex", String.valueOf(position));
         this.startActivity(i);
     }
 

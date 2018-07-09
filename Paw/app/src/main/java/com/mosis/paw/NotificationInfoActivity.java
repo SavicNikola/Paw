@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.mosis.paw.Model.PawNotification;
 
+import java.util.ArrayList;
+
 public class NotificationInfoActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     GoogleMap mMap;
@@ -33,7 +35,7 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
     Button dismiss, thankyou;
     LinearLayout numLayout;
 
-    String notificationID, notificationIndex;
+    String notificationID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +44,8 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null) {
+        if(extras != null)
             notificationID = extras.getString("NotID");
-            notificationIndex = extras.getString("NotIndex");
-        }
 
         EditToolbar();
 
@@ -137,7 +137,7 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
                             //dismiss
                             dismiss.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onClick(final View v) {
 
                                     // DELETE NOTIFICATION DATA
                                     FirebaseSingleton.getInstance().databaseReference
@@ -149,19 +149,38 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
                                     FirebaseSingleton.getInstance().databaseReference
                                             .child("notifications")
                                             .child(Pawer.getInstance().getEmail())
-                                            .child(notificationIndex)
-                                            .removeValue();
+                                            .addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
 
-                                    Toast.makeText(v.getContext(), "We're sorry!", Toast.LENGTH_SHORT).show();
+                                                    if (list != null && list.contains(notificationID)) {
+                                                        list.remove(notificationID);
 
-                                    onBackPressed();
+                                                        FirebaseSingleton.getInstance().databaseReference
+                                                                .child("notifications")
+                                                                .child(Pawer.getInstance().getEmail())
+                                                                .setValue(list);
+
+
+                                                        Toast.makeText(v.getContext(), "We're sorry!", Toast.LENGTH_SHORT).show();
+                                                        onBackPressed();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
                                 }
                             });
 
                             //thankyou
                             thankyou.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onClick(final View v) {
 
                                     // ADD POINTS
                                     FirebaseSingleton.getInstance().databaseReference
@@ -210,12 +229,29 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
                                     FirebaseSingleton.getInstance().databaseReference
                                             .child("notifications")
                                             .child(Pawer.getInstance().getEmail())
-                                            .child(notificationIndex)
-                                            .removeValue();
+                                            .addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    ArrayList<String> list = (ArrayList) dataSnapshot.getValue();
 
-                                    Toast.makeText(v.getContext(), "You're welcome!", Toast.LENGTH_SHORT).show();
+                                                    if (list != null && list.contains(notificationID)) {
+                                                        list.remove(notificationID);
 
-                                    onBackPressed();
+                                                        FirebaseSingleton.getInstance().databaseReference
+                                                                .child("notifications")
+                                                                .child(Pawer.getInstance().getEmail())
+                                                                .setValue(list);
+
+                                                        Toast.makeText(v.getContext(), "You're welcome!", Toast.LENGTH_SHORT).show();
+                                                        onBackPressed();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
                                 }
                             });
                         }
