@@ -199,10 +199,10 @@ public class NotificationInfoActivity extends AppCompatActivity implements OnMap
                                                             pts += 10;
                                                             break;
                                                         case "lost":
-                                                            pts += 5;
+                                                            pts -= 5;
                                                             break;
                                                         case "found":
-                                                            pts -= 5;
+                                                            pts += 5;
                                                             break;
                                                     }
 

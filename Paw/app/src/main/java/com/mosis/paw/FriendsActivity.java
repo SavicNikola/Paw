@@ -1,8 +1,11 @@
 package com.mosis.paw;
 
 import android.app.SearchManager;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +33,9 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
     private List<Friend> friendsList;
     private FriendsAdapter mAdapter;
 
+    private BluetoothAdapter mBluetoothAdapter;
+    Boolean stateChangeReceiverRegistered = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +56,80 @@ public class FriendsActivity extends AppCompatActivity implements FriendsAdapter
 
         //DummyItems();
         InitListFromDatabase();
+
+        initBluetooth();
+    }
+
+    private void initBluetooth() {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter != null) {
+            // enable bt
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(intent);
+
+                // receiver for action
+                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+                registerReceiver(stateChangeReceiver, intentFilter);
+                stateChangeReceiverRegistered = true;
+            }
+        }
+    }
+
+    private final BroadcastReceiver stateChangeReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+
+            if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
+
+                switch (state) {
+                    case BluetoothAdapter.STATE_ON:
+                        Toast.makeText(context, "Bluetooth on!", Toast.LENGTH_SHORT).show();
+                        initBluetoothDiscoverable();
+                }
+            }
+        }
+    };
+
+    private void initBluetoothDiscoverable() {
+
+        //Toast.makeText(this, "Making discoverable for 300 seconds!", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(intent);
+
+        IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(discoverableChangeReceiver, intentFilter);
+    }
+
+    private final BroadcastReceiver discoverableChangeReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+
+            if (action.equals(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, mBluetoothAdapter.ERROR);
+
+                switch (state) {
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Toast.makeText(context, "Discoverable on!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (stateChangeReceiverRegistered) {
+            unregisterReceiver(stateChangeReceiver);
+            unregisterReceiver(discoverableChangeReceiver);
+        }
     }
 
     void InitListFromDatabase() {

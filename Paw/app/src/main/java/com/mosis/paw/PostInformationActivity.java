@@ -99,7 +99,25 @@ public class PostInformationActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        ((TextView) findViewById(R.id.post_user_name)).setText(getIntent().getStringExtra("postCreator"));
+        //((TextView) findViewById(R.id.post_user_name)).setText(getIntent().getStringExtra("postCreator"));
+        FirebaseSingleton.getInstance().databaseReference
+                .child("users")
+                .child(post.getUserId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Pawer user = dataSnapshot.getValue(Pawer.class);
+
+                        if (user != null)
+                            ((TextView) findViewById(R.id.post_user_name)).setText(user.getName().toUpperCase());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
         ((TextView) findViewById(R.id.post_layout_desc)).setText(post.getDescription());
         btnMain.setText(post.getType().toUpperCase());
     }
