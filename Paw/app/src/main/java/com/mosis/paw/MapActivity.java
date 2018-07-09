@@ -22,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private String typeOfMap, typeOfFeed;
 
+    private Bundle extras;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +55,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         markersList = new ArrayList<MarkerOptions>();
 
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         typeOfMap = extras == null ? null : extras.getString("TYPE", null);
         typeOfFeed = extras == null ? null : extras.getString("FEED", null);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (typeOfMap != null)
             switch (typeOfMap) {
                 case "friends":
@@ -83,6 +91,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (marker.getTitle() != null && marker.getTitle().equals("user")) {
+                    startActivity(new Intent(MapActivity.this, ProfileActivity.class)
+                            .putExtra("UserID", marker.getSnippet()));
+                } else if (marker.getTitle() != null && marker.getTitle().equals("post")) {
+                    startActivity(new Intent(MapActivity.this, PostInformationActivity.class)
+                            .putExtra("postId", marker.getSnippet()));
+                }
+                return true;
+            }
+        });
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -103,10 +124,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
             case R.id.map_only_friends:
                 getSupportActionBar().setTitle("Friends on map");
+                typeOfMap = "friends";
                 initFriendsMarkers();
                 break;
             case R.id.map_all_users:
                 getSupportActionBar().setTitle("Users on map");
+                typeOfMap = "users";
                 initUsersMarkers();
                 break;
             case R.id.map_filters:
@@ -154,6 +177,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                                             @Override
                                                                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                                                                 MarkerOptions markerOptions = new MarkerOptions()
+                                                                                        .title("user")
+                                                                                        .snippet(friend.getEscapedEmail())
                                                                                         .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
                                                                                         .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
 
@@ -175,6 +200,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                                             @Override
                                                                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                                                                 MarkerOptions markerOptions = new MarkerOptions()
+                                                                                        .title("user")
+                                                                                        .snippet(friend.getEscapedEmail())
                                                                                         .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
                                                                                         .position(new LatLng(Double.valueOf(friend.getLatitude()), Double.valueOf(friend.getLongitude())));
 
@@ -231,6 +258,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                             @Override
                                                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                                                 MarkerOptions markerOptions = new MarkerOptions()
+                                                                        .title("user")
+                                                                        .snippet(user.getEscapedEmail())
                                                                         .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
                                                                         .position(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude())));
 
@@ -252,6 +281,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                                             @Override
                                                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                                                 MarkerOptions markerOptions = new MarkerOptions()
+                                                                        .title("user")
+                                                                        .snippet(user.getEscapedEmail())
                                                                         .icon(BitmapDescriptorFactory.fromBitmap(makeStackedBitmap(resource)))
                                                                         .position(new LatLng(Double.valueOf(user.getLatitude()), Double.valueOf(user.getLongitude())));
 
@@ -285,6 +316,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                         if (post.getMapLatitude() != null && post.getMapLongitude() != null) {
                             markersList.add(new MarkerOptions()
+                                    .title("post")
+                                    .snippet(post.getId())
                                     .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
                             showMarkers();
                         }
@@ -316,6 +349,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             if (enterToFeed(post))
                                 if (post.getMapLatitude() != null && post.getMapLongitude() != null)
                                     markersList.add(new MarkerOptions()
+                                            .title("post")
+                                            .snippet(post.getId())
                                             .position(new LatLng(Double.valueOf(post.getMapLatitude()), Double.valueOf(post.getMapLongitude()))));
                         }
 

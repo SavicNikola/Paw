@@ -23,7 +23,7 @@
                 android:layout_height="250dp"
                 android:contentDescription="@string/user_image"
                 android:scaleType="centerCrop"
-                android:src="@drawable/person"
+                android:src="@drawable/no_image_available"
                 app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar

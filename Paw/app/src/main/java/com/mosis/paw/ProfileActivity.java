@@ -62,9 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         // da se ne bi fokusirao recycleview, posto se iz nekog razloga fokusira
         findViewById(R.id.profile_helps_recycler_view).setFocusable(false);
         findViewById(R.id.profile_start_layout).requestFocus();
-
-        // profile
-        profileImage.setImageResource(R.drawable.profile_full);
     }
 
     private void getViews() {
@@ -78,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseSingleton.getInstance().storageReference
                 .child("profile_images")
-                .child(Pawer.getInstance().getEscapedEmail())
+                .child(userId)
                 .getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
