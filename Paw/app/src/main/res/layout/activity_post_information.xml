@@ -16,8 +16,7 @@
         <LinearLayout
             android:id="@+id/post_layout_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/post_user_name"
@@ -26,24 +25,6 @@
                 android:textColor="@color/colorAccent"
                 android:text="Name"
                 android:textSize="36dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/post_info_map_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@drawable/blue_pill_background_fill"
-                android:paddingLeft="10dp"
-                android:paddingRight="15dp"
-                android:drawablePadding="5dp"
-                android:text="View on map"
-                android:drawableLeft="@drawable/ic_place_line"
-                android:drawableStart="@drawable/ic_place_line"
-                android:textSize="12dp"/>
 
         </LinearLayout>
 

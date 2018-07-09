@@ -78,7 +78,6 @@ public class FeedFragment extends Fragment {
         }
 
         filtersButton = mView.findViewById(R.id.feed_filters_btn);
-        InitFabButton();
     }
 
     private void initFiltersButton() {
@@ -370,5 +369,6 @@ public class FeedFragment extends Fragment {
 
         initFiltersButton();
         InitRecycleView();
+        InitFabButton();
     }
 }

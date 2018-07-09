@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ public class PostInformationActivity extends AppCompatActivity {
 
     String postId;
 
+    Button btnMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +52,9 @@ public class PostInformationActivity extends AppCompatActivity {
 
         EditToolbar();
 
-        Button btn = findViewById(R.id.post_info_main_btn);
-        btn.setOnClickListener(new View.OnClickListener() {
+        btnMain = findViewById(R.id.post_info_main_btn);
+
+        btnMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), FoundActivity.class);
@@ -60,17 +64,17 @@ public class PostInformationActivity extends AppCompatActivity {
             }
         });
 
-        Button postOnMap = findViewById(R.id.post_info_map_btn);
-        postOnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapActivity.class);
-                //type of map (friends, post, feed)
-                intent.putExtra("TYPE", "post");
-                intent.putExtra("POSTID", postId);
-                v.getContext().startActivity(intent);
-            }
-        });
+//        Button postOnMap = findViewById(R.id.post_info_map_btn);
+//        postOnMap.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), MapActivity.class);
+//                //type of map (friends, post, feed)
+//                intent.putExtra("TYPE", "post");
+//                intent.putExtra("POSTID", postId);
+//                v.getContext().startActivity(intent);
+//            }
+//        });
     }
 
     private void getPost() {
@@ -97,6 +101,7 @@ public class PostInformationActivity extends AppCompatActivity {
     private void initData() {
         ((TextView) findViewById(R.id.post_user_name)).setText(getIntent().getStringExtra("postCreator"));
         ((TextView) findViewById(R.id.post_layout_desc)).setText(post.getDescription());
+        btnMain.setText(post.getType().toUpperCase());
     }
 
     private void InitViewPager() {
@@ -176,6 +181,13 @@ public class PostInformationActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.post_map_menu, menu);
+        return true;
+    }
+
     private void EditToolbar() {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
         getSupportActionBar().setTitle("Post Information");
@@ -188,6 +200,12 @@ public class PostInformationActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.post_map:
+                Intent intent = new Intent(this, MapActivity.class);
+                //type of map (friends, post, feed)
+                intent.putExtra("TYPE", "post");
+                intent.putExtra("POSTID", postId);
+                this.startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
