@@ -446,7 +446,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         initPostsMarkers();
     }
 
-    private Bitmap makeStackedBitmap(final Bitmap foreground) {
+    private Bitmap makeStackedBitmap( Bitmap foreground) {
+        foreground = Bitmap.createScaledBitmap(foreground, 1000,1000,false);
         Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.map_marker);
         Bitmap result = Bitmap.createBitmap(background.getWidth(), background.getHeight(), background.getConfig());   //Initialize the result image
         Canvas canvas = new Canvas(result);   //Create a canvas so we can draw onto the result image
