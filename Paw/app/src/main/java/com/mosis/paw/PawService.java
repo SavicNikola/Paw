@@ -1,6 +1,7 @@
 package com.mosis.paw;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -125,6 +126,12 @@ public class PawService extends Service {
     private void displayNotification(PawNotification notification) {
         if (notification == null) return;
 
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 3,
+                new Intent(this, NotificationInfoActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtra("NotID", notification.getId()),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(PawService.this, CHANNEL_ID)
                 .setContentTitle(notification.getType())
@@ -133,6 +140,8 @@ public class PawService extends Service {
                 .setSmallIcon(R.drawable.ic_paw_accent)
                 .setSound(sound)
                 .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         Glide.with(this)
